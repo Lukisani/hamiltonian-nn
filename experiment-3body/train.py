@@ -87,29 +87,33 @@ def train(args):
             test_dist.mean().item(), test_dist.std().item()/np.sqrt(test_dist.shape[0])))
   return model, stats
 
+def run_model(args, label):
+    # Train model
+    model, stats = train(args)
+
+    # Create save directory if it doesn't exist
+    os.makedirs(args.save_dir, exist_ok=True)
+
+    # Save model
+    model_path = f'{args.save_dir}/{args.name}-orbits-{label}.tar'
+    torch.save(model.state_dict(), model_path)
+
+    # Save stats
+    stats_path = f'{args.save_dir}/{args.name}-orbits-{label}.pkl'
+    to_pickle(stats, stats_path)
+
 if __name__ == "__main__":
-    # Train baseline model
+    # Get arguments
     args = get_args()
-    args['baseline'] = True
-    baseline_model, baseline_stats = train(args)
 
-    # Save baseline model and stats
-    os.makedirs(args['save_dir'], exist_ok=True)
-    baseline_model_path = '{}/{}-orbits-baseline.tar'.format(args['save_dir'], args['name'])
-    torch.save(baseline_model.state_dict(), baseline_model_path)
-    baseline_stats_path = '{}/{}-orbits-baseline.pkl'.format(args['save_dir'], args['name'])
-    to_pickle(baseline_stats, baseline_stats_path)
+    # Run baseline
+    print("Running baseline...")
+    args.baseline = True
+    run_model(args, 'baseline')
 
-    print("Baseline model and stats saved!")
+    # Run HNN
+    print("Running HNN...")
+    args.baseline = False
+    run_model(args, 'hnn')
 
-    # Train HNN model
-    args['baseline'] = False
-    hnn_model, hnn_stats = train(args)
-
-    # Save HNN model and stats
-    hnn_model_path = '{}/{}-orbits-hnn.tar'.format(args['save_dir'], args['name'])
-    torch.save(hnn_model.state_dict(), hnn_model_path)
-    hnn_stats_path = '{}/{}-orbits-hnn.pkl'.format(args['save_dir'], args['name'])
-    to_pickle(hnn_stats, hnn_stats_path)
-
-    print("HNN model and stats saved!")
+    print("Training complete for both models.")
