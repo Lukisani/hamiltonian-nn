@@ -88,15 +88,28 @@ def train(args):
   return model, stats
 
 if __name__ == "__main__":
+    # Train baseline model
     args = get_args()
-    model, stats = train(args)
+    args['baseline'] = True
+    baseline_model, baseline_stats = train(args)
 
-    # save model
-    os.makedirs(args.save_dir) if not os.path.exists(args.save_dir) else None
-    label = 'baseline' if args.baseline else 'hnn'
-    model_path = '{}/{}-orbits-{}.tar'.format(args.save_dir, args.name, label)
-    torch.save(model.state_dict(), model_path)
+    # Save baseline model and stats
+    os.makedirs(args['save_dir'], exist_ok=True)
+    baseline_model_path = '{}/{}-orbits-baseline.tar'.format(args['save_dir'], args['name'])
+    torch.save(baseline_model.state_dict(), baseline_model_path)
+    baseline_stats_path = '{}/{}-orbits-baseline.pkl'.format(args['save_dir'], args['name'])
+    to_pickle(baseline_stats, baseline_stats_path)
 
-    # save stats
-    stats_path = '{}/{}-orbits-{}.pkl'.format(args.save_dir, args.name, label)
-    to_pickle(stats, stats_path)
+    print("Baseline model and stats saved!")
+
+    # Train HNN model
+    args['baseline'] = False
+    hnn_model, hnn_stats = train(args)
+
+    # Save HNN model and stats
+    hnn_model_path = '{}/{}-orbits-hnn.tar'.format(args['save_dir'], args['name'])
+    torch.save(hnn_model.state_dict(), hnn_model_path)
+    hnn_stats_path = '{}/{}-orbits-hnn.pkl'.format(args['save_dir'], args['name'])
+    to_pickle(hnn_stats, hnn_stats_path)
+
+    print("HNN model and stats saved!")
