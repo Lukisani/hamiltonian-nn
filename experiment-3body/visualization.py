@@ -88,4 +88,3 @@ def plot_training_curves(base_stats, hnn_stats, fig_dir='./figures', format='pdf
 
 # Additional visualization functions like plot_orbits for GIFs could also be added here.
 
-#hello
