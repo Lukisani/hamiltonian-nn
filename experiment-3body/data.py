@@ -173,7 +173,6 @@ def get_dataset(experiment_name, save_dir, **kwargs):
     except:
         print("Had a problem loading data from {}. Rebuilding dataset...".format(path))
         data = make_orbits_dataset(**kwargs)
-        print(data)
         to_pickle(data, path)
 
     return data
