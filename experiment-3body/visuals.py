@@ -73,21 +73,20 @@ def plot_ground_truth():
     print('figure was ssaved in:', args.fig_dir)
 
 
-def load_models():
-    def load_model(args, baseline=False):
-        output_dim = args.input_dim if baseline else 2
-        nn_model = MLP(args.input_dim, args.hidden_dim, output_dim, args.nonlinearity)
-        model = HNN(args.input_dim, differentiable_model=nn_model,
-                field_type=args.field_type, baseline=baseline)
-        
-        case = 'baseline' if baseline else 'hnn'
-        path = "{}/{}-orbits-{}.tar".format(args.save_dir, args.name, case)
-        model.load_state_dict(torch.load(path))
-        return model
+def load_model(args, baseline=False):
+    output_dim = args.input_dim if baseline else 2
+    nn_model = MLP(args.input_dim, args.hidden_dim, output_dim, args.nonlinearity)
+    model = HNN(args.input_dim, differentiable_model=nn_model,
+            field_type=args.field_type, baseline=baseline)
+    
+    case = 'baseline' if baseline else 'hnn'
+    path = "{}/{}-orbits-{}.tar".format(args.save_dir, args.name, case)
+    model.load_state_dict(torch.load(path))
+    return model
 
-    args = ObjectView(get_args())
-    base_model = load_model(args, baseline=True)
-    hnn_model = load_model(args, baseline=False)
+args = ObjectView(get_args())
+base_model = load_model(args, baseline=True)
+hnn_model = load_model(args, baseline=False)
 
 
 def what_has_baseline_learned():
@@ -445,3 +444,5 @@ def plot_training_curves():
 #         print("Invalid choice, please enter a number from the list.")
 
 plot_ground_truth()
+load_model()
+what_has_baseline_learned()
