@@ -8,4 +8,6 @@ from data import make_orbits_dataset
 
 path = '{}/{}-orbits-dataset.pkl'.format(THIS_DIR, '3body')
 data = make_orbits_dataset(verbose=True)
+print('Dataset created successfully')
 to_pickle(data, path)
+print('...saved in,' path)
