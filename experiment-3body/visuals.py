@@ -446,3 +446,4 @@ def plot_training_curves():
 
 plot_ground_truth()
 what_has_baseline_learned()
+what_has_hnn_learned()
