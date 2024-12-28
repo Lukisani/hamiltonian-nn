@@ -2,13 +2,31 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+# import matplotlib.animation as animation
+# import torch, time, sys
+# import scipy.integrate, scipy.ndimage
+# solve_ivp = scipy.integrate.solve_ivp
+# gaussian_filter = scipy.ndimage.gaussian_filter
+
+# EXPERIMENT_DIR = './experiment-3body'
+# sys.path.append(EXPERIMENT_DIR)
+
+# from nn_models import MLP
+# from hnn import HNN
+# from utils import L2_loss, to_pickle, from_pickle
+# from data import get_dataset, get_orbit, random_config
+# from data import potential_energy, kinetic_energy, total_energy
+
 # If needed, import the same data/model functions used in test
 # from test import get_args, ObjectView, random_config, get_orbit, load_model, model_update
 # from data import potential_energy, kinetic_energy, total_energy
 # Or load pickled data from disk as needed.
 
+
+
+
 def plot_trajectories(orbit, base_orbit=None, hnn_orbit=None, settings=None, fig_dir='./figures', format='pdf'):
-    """Plot trajectories and energy comparisons."""
+    """Plot trajectories and energy comparisons of ground truth vs baseline NN."""
     fig = plt.figure(figsize=[15,4], dpi=100)
     lw = 3
     fs=9
@@ -67,6 +85,10 @@ def plot_trajectories(orbit, base_orbit=None, hnn_orbit=None, settings=None, fig
 
 def plot_training_curves(base_stats, hnn_stats, fig_dir='./figures', format='pdf'):
     """Plot the training curves for baseline and HNN."""
+
+    base_stats = from_pickle('{}/3body-orbits-baseline.pkl'.format(EXPERIMENT_DIR))
+    hnn_stats = from_pickle('{}/3body-orbits-hnn.pkl'.format(EXPERIMENT_DIR))
+
     import scipy.ndimage
     gaussian_filter = scipy.ndimage.gaussian_filter
 
