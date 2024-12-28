@@ -88,20 +88,20 @@ args = ObjectView(get_args())
 base_model = load_model(args, baseline=True)
 hnn_model = load_model(args, baseline=False)
 
+def model_update(t, state, model):
+    state = state.reshape(-1,5)
+
+    deriv = np.zeros_like(state)
+    np_x = state[:,1:] # drop mass
+    np_x = np_x.T.flatten()[None, :]
+    x = torch.tensor( np_x, requires_grad=True, dtype=torch.float32)
+    dx_hat = model.time_derivative(x)
+    deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
+    return deriv.reshape(-1)
 
 def what_has_baseline_learned():
 
     # for integrating a vector field parameterized by a NN or HNN
-    def model_update(t, state, model):
-        state = state.reshape(-1,5)
-
-        deriv = np.zeros_like(state)
-        np_x = state[:,1:] # drop mass
-        np_x = np_x.T.flatten()[None, :]
-        x = torch.tensor( np_x, requires_grad=True, dtype=torch.float32)
-        dx_hat = model.time_derivative(x)
-        deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
-        return deriv.reshape(-1)
 
     np.random.seed(0)
     t_points = 2000
