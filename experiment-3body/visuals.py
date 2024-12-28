@@ -217,6 +217,7 @@ def what_has_hnn_learned():
 
     plt.tight_layout() ; plt.show()
     fig.savefig('{}/3body-hnn-example.{}'.format(args.fig_dir, FORMAT))
+    print('file saved (hnn)')
 
 
 
