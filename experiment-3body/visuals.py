@@ -6,12 +6,14 @@ import scipy.integrate, scipy.ndimage
 solve_ivp = scipy.integrate.solve_ivp
 gaussian_filter = scipy.ndimage.gaussian_filter
 
-EXPERIMENT_DIR = './experiment-3body'
-sys.path.append(EXPERIMENT_DIR)
-
 from nn_models import MLP #whats going on
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
+
+
+EXPERIMENT_DIR = './experiment-3body'
+sys.path.append(EXPERIMENT_DIR)
+
 from data import get_dataset, get_orbit, random_config
 from data import potential_energy, kinetic_energy, total_energy
 
@@ -39,7 +41,7 @@ class ObjectView(object):
     def __init__(self, d): self.__dict__ = d
 
 
-def plot_groundtruth():
+def plot_ground_truth():
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
@@ -397,46 +399,46 @@ def plot_training_curves():
     plt.tight_layout() ; plt.show()
     fig.savefig('{}/3body-train-curves-long.{}'.format(args.fig_dir, FORMAT))
 
-while True:
-    # Display options
-    print("\nPlease choose an option:")
-    print("1: plot_ground_truth")
-    print("2: load_models")
-    print("3: what_has_baseline_learned")
-    print("4: what_has_hnn_learned")
-    print("5: visualize_all_orbits")
-    print("6: visualize_all_energies")
-    print("7: visualize_energy_conservation")
-    print("8: plot_training_curves")
+# while True:
+#     # Display options
+#     print("\nPlease choose an option:")
+#     print("1: plot_ground_truth")
+#     print("2: load_models")
+#     print("3: what_has_baseline_learned")
+#     print("4: what_has_hnn_learned")
+#     print("5: visualize_all_orbits")
+#     print("6: visualize_all_energies")
+#     print("7: visualize_energy_conservation")
+#     print("8: plot_training_curves")
     
-    print("-1: Exit")
+#     print("-1: Exit")
     
-    # Get user input
-    user_choice = input("Enter the number of your choice: ")
+#     # Get user input
+#     user_choice = input("Enter the number of your choice: ")
 
-    # Check if user wants to exit
-    if user_choice == "-1":
-        print("Exiting the program.")
-        break
+#     # Check if user wants to exit
+#     if user_choice == "-1":
+#         print("Exiting the program.")
+#         break
 
-    # Call corresponding function based on input
-    if user_choice == "1":
-        plot_ground_truth()
-    elif user_choice == "2":
-        load_models()
-    elif user_choice == "3":
-        what_has_baseline_learned()
-    elif user_choice == "4":
-        what_has_hnn_learned()
-    elif user_choice == "5":
-        visualize_all_orbits()
-    elif user_choice == "6":
-        visualize_all_energies()
-    elif user_choice == "7":
-        visualize_energy_conservation()
-    elif user_choice == "8":
-        plot_training_curves()
-    else:
-        print("Invalid choice, please enter a number from the list.")
+#     # Call corresponding function based on input
+#     if user_choice == "1":
+#         plot_ground_truth()
+#     elif user_choice == "2":
+#         load_models()
+#     elif user_choice == "3":
+#         what_has_baseline_learned()
+#     elif user_choice == "4":
+#         what_has_hnn_learned()
+#     elif user_choice == "5":
+#         visualize_all_orbits()
+#     elif user_choice == "6":
+#         visualize_all_energies()
+#     elif user_choice == "7":
+#         visualize_energy_conservation()
+#     elif user_choice == "8":
+#         plot_training_curves()
+#     else:
+#         print("Invalid choice, please enter a number from the list.")
 
-# plot_ground_truth
+plot_ground_truth()
