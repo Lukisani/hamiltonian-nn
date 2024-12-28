@@ -83,5 +83,25 @@ coords
     [qx1, qy1, px1, py1, qx2, qy2, px2, py2, qx3, qy3, px3, py3]
     where qx and qy are position coordinates and px and py are momenta
 
+test_coords
+  shape: (M, nbodies*4) # M = N*test_split
+  similar structure to coords, just contains the test set
+
 dcoords
-  shape: (N, nbodies)
+  shape: (N, nbodies*4)
+  contains the time derivatives of coords. (velocity & acceleration???)
+
+test_dcoords
+  shape: (M, nbodies*4) # M = N*test_split
+  similar structure to dcoords, just contains the test set
+
+energy
+  shape: (N,)
+  contains total energy of system at each timestep
+
+test_energy
+  shape: (M,)
+  similar strcuture to energy, just contains the test set
+
+meta
+  contains orbit_settings
