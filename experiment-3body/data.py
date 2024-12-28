@@ -3,7 +3,6 @@
 
 import numpy as np
 import scipy
-import csv
 solve_ivp = scipy.integrate.solve_ivp
 
 import os, sys
