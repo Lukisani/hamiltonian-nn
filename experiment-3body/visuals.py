@@ -9,8 +9,8 @@ gaussian_filter = scipy.ndimage.gaussian_filter
 EXPERIMENT_DIR = './experiment-3body'
 sys.path.append(EXPERIMENT_DIR)
 
-#from nn_models import MLP
-from hnn import HNN
+# from nn_models import MLP
+# from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
 from data import get_dataset, get_orbit, random_config
 from data import potential_energy, kinetic_energy, total_energy
