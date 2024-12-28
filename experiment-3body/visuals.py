@@ -68,8 +68,8 @@ def plot_ground_truth():
     plt.legend()
     plt.xlim(*settings['t_span'])
 
-    plt.show()
     fig.savefig('{}/orbits-dataset.{}'.format(args.fig_dir, FORMAT))
+    plt.show()
     print('figure was ssaved in:', args.fig_dir)
 
 
