@@ -164,7 +164,7 @@ def what_has_baseline_learned():
 
 
 def what_has_hnn_learned():
-    
+
     global hnn_orbit
 
     np.random.seed(0)
@@ -234,6 +234,9 @@ def visualize_all_orbits():
     state = random_config()
 
     orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span)
+
+    update_fn = lambda t, y0: model_update(t, y0, hnn_model)
+    hnn_orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span, update_fn=update_fn)
 
     def plot_orbits(fig, k, tail=10000, pfrac=0.05, fs=28, ms=40, lw=3, tpad=15):
         xmin = ymin = np.min([orbit[:,1,:].min(), orbit[:,2,:].min()])
