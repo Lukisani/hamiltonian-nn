@@ -13,8 +13,6 @@ sys.path.append(EXPERIMENT_DIR)
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(PARENT_DIR)
 
-print(PARENT_DIR)
-
 from nn_models import MLP #whats going on
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
@@ -72,7 +70,7 @@ def plot_ground_truth():
 
     fig.savefig('{}/orbits-dataset.{}'.format(args.fig_dir, FORMAT))
     plt.show()
-    print('figure saved in:', args.fig_dir)
+    print('figure saved in:', PARENT_DIR + args.fig_dir)
 
 
 # def load_model(args, baseline=False):
