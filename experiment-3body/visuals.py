@@ -47,7 +47,7 @@ def plot_ground_truth():
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
-    orbit, settings = get_orbit(state, t_points=2000, t_span = [0, 5], rtol = 1e-9)
+    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 10], rtol = 1e-9)
 
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
