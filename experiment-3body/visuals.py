@@ -158,7 +158,7 @@ def what_has_baseline_learned():
 
     plt.tight_layout() ; plt.show()
     fig.savefig('{}/3body-base-example.{}'.format(args.fig_dir, FORMAT))
-    print('Figure saved in:', PARENT_DIR + fig)
+    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-base-example.{}'.format(FORMAT))
 
 
 def what_has_hnn_learned():
@@ -218,7 +218,7 @@ def what_has_hnn_learned():
 
     plt.tight_layout() ; plt.show()
     fig.savefig('{}/3body-hnn-example.{}'.format(args.fig_dir, FORMAT))
-    print('file saved (hnn)')
+    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-hnn-example.{}'.format(FORMAT))
 
 
 
@@ -278,6 +278,7 @@ def visualize_all_orbits():
     fig = plt.figure(figsize=[8,2.8], dpi=DPI)
     plot_orbits(fig, k, fs=13, tpad=6, lw=2, ms=30)
     plt.show() ; fig.savefig('{}/3body-compare.{}'.format(args.fig_dir, FORMAT))
+    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-compare.{}'.format(FORMAT))
 
 
 def visualize_all_energies():
@@ -329,6 +330,7 @@ def visualize_all_energies():
     plt.legend(fontsize=7, loc='center right')
 
     plt.tight_layout() ; fig.savefig('{}/3body-energy-compare.{}'.format(args.fig_dir, FORMAT))
+    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-base-example.{}'.format(FORMAT))
 
 
 def visualize_energy_conservation():
@@ -379,6 +381,7 @@ def visualize_energy_conservation():
         
     plt.tight_layout() ; plt.show()
     fig.savefig('{}/3body-total-energy.{}'.format(args.fig_dir, FORMAT))
+    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-total=energy.{}'.format(FORMAT))
 
 
 def plot_training_curves():
@@ -402,6 +405,7 @@ def plot_training_curves():
     plt.yscale('log')
     plt.tight_layout() ; plt.show()
     fig.savefig('{}/3body-train-curves-long.{}'.format(args.fig_dir, FORMAT))
+    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-train-curves-long.{}'.format(FORMAT))
 
 # while True:
 #     # Display options
