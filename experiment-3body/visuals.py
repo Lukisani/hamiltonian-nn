@@ -47,10 +47,7 @@ def plot_ground_truth():
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
-    #orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 5], rtol = 1e-9)
-    data = from_pickle('{}/{}-orbits-dataset.pkl'.format(os.path.dirname(os.path.abspath(__file__)), '3body'))
-    orbit = {key: data[key] for key in ['coords', 'dcoords', 'energy']}
-    settings = data['meta']
+    orbit, settings = get_orbit(state, t_points=2000, t_span = [0, 5], rtol = 1e-9)
 
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
