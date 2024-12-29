@@ -444,6 +444,6 @@ def plot_training_curves():
 #     else:
 #         print("Invalid choice, please enter a number from the list.")
 
-plot_ground_truth()
+# plot_ground_truth()
 # what_has_baseline_learned()
 # what_has_hnn_learned()
