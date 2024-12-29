@@ -70,7 +70,7 @@ def plot_ground_truth():
 
     fig.savefig('{}/orbits-dataset.{}'.format(args.fig_dir, FORMAT))
     plt.show()
-    print('figure saved in:', PARENT_DIR + args.fig_dir)
+    print('Figure saved in:', PARENT_DIR + args.fig_dir)
 
 
 # def load_model(args, baseline=False):
