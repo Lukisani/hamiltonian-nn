@@ -21,6 +21,3 @@ print('test_energy shape:', data['test_energy'].shape)
 print('meta:')
 for key, value in data['meta'].items():
     print('\t' + key + ':', value)
-
-filtered_data = {key: data[key] for key in ['coords', 'dcoords']}
-print(filtered_data)
