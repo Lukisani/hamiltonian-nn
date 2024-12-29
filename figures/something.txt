@@ -1,1 +1,1 @@
-keep me so that figures is cloned with repo
+keep me so that figures folder is cloned with repo
