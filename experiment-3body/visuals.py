@@ -235,9 +235,6 @@ def visualize_all_orbits():
 
     orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span)
 
-    update_fn = lambda t, y0: model_update(t, y0, hnn_model)
-    hnn_orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span, update_fn=update_fn)
-
     def plot_orbits(fig, k, tail=10000, pfrac=0.05, fs=28, ms=40, lw=3, tpad=15):
         xmin = ymin = np.min([orbit[:,1,:].min(), orbit[:,2,:].min()])
         xmax = ymax = np.max([orbit[:,1,:].max(), orbit[:,2,:].max()])
@@ -296,6 +293,13 @@ def visualize_all_orbits():
 
 
 def visualize_all_energies():
+
+    np.random.seed(0)
+    t_points = 2000
+    t_span = [0,5]
+    state = random_config()
+
+    orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span)
 
     tail=10000; pfrac=0.05
     fs=13; tpad=6; lw=2; ms=30
