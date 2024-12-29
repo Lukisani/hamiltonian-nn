@@ -47,7 +47,7 @@ def plot_ground_truth():
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
-    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 50], rtol = 1e-9)
+    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 5], rtol = 1e-9)
 
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
@@ -100,6 +100,8 @@ def model_update(t, state, model):
     return deriv.reshape(-1)
 
 def what_has_baseline_learned():
+
+    global base_orbit
 
     # for integrating a vector field parameterized by a NN or HNN
 
@@ -162,6 +164,8 @@ def what_has_baseline_learned():
 
 
 def what_has_hnn_learned():
+    
+    global hnn_orbit
 
     np.random.seed(0)
     t_points = 2000
@@ -223,6 +227,13 @@ def what_has_hnn_learned():
 
 
 def visualize_all_orbits():
+
+    np.random.seed(0)
+    t_points = 2000
+    t_span = [0,5]
+    state = random_config()
+
+    orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span)
 
     def plot_orbits(fig, k, tail=10000, pfrac=0.05, fs=28, ms=40, lw=3, tpad=15):
         xmin = ymin = np.min([orbit[:,1,:].min(), orbit[:,2,:].min()])
