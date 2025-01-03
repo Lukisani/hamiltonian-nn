@@ -13,7 +13,7 @@ sys.path.append(EXPERIMENT_DIR)
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(PARENT_DIR)
 
-from nn_models import MLP #whats going on
+from nn_models import MLP
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
 from data import get_dataset, get_orbit, random_config
