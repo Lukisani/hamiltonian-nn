@@ -130,3 +130,37 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
             'dcoords': np.stack(dx)[:N],
             'energy': np.stack(e)[:N]}
     return data, orbit_settings
+
+
+##### MAKE A DATASET #####
+def make_orbits_dataset(test_split=0.2, **kwargs):
+    data, orbit_settings = sample_orbits(**kwargs)
+    
+    # make a train/test split
+    split_ix = int(data['coords'].shape[0] * test_split)
+    split_data = {}
+    for k, v in data.items():
+        split_data[k], split_data['test_' + k] = v[split_ix:], v[:split_ix]
+    data = split_data
+
+    data['meta'] = orbit_settings
+    return data
+
+
+##### LOAD OR SAVE THE DATASET #####
+def get_dataset(experiment_name, save_dir, **kwargs):
+    '''Returns an orbital dataset. Also constructs
+    the dataset if no saved version is available.'''
+
+    path = '{}/{}-3Dorbits-dataset.pkl'.format(save_dir, experiment_name)
+
+    try:
+        data = from_pickle(path)
+        print("Successfully loaded data from {}".format(path))
+    except:
+        print("Had a problem loading data from {}. Rebuilding dataset...".format(path))
+        data = make_orbits_dataset(**kwargs)
+        print(data)
+        to_pickle(data, path)
+
+    return data
