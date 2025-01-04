@@ -125,28 +125,24 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
     x, dx, e = [], [], []
     N = timesteps*trials
     while len(x) < N:
-        try:
 
-            state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
-            orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
-            batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
+        state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
+        orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
+        batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
 
-            for state in batch:
-                dstate = update(None, state)
-                
-                # reshape from [nbodies, state] where state=[m, qx, qy, px, py]
-                # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
-                coords = state.reshape(nbodies,7).T[1:].flatten()
-                dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
-                x.append(coords)
-                dx.append(dcoords)
+        for state in batch:
+            dstate = update(None, state)
+            
+            # reshape from [nbodies, state] where state=[m, qx, qy, px, py]
+            # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
+            coords = state.reshape(nbodies,7).T[1:].flatten()
+            dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
+            x.append(coords)
+            dx.append(dcoords)
 
-                shaped_state = state.copy().reshape(nbodies,7,1)
-                e.append(total_energy(shaped_state))
-        
-        except Exception as e:
-            print(f"Error during orbit sampling: {e}")
-            break
+            shaped_state = state.copy().reshape(nbodies,7,1)
+            e.append(total_energy(shaped_state))
+    
 
     data = {'coords': np.stack(x)[:N],
             'dcoords': np.stack(dx)[:N],
