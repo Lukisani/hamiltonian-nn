@@ -41,7 +41,7 @@ def get_accelerations(state, epsilon=0):
     net_accs = [] # [nbodies x 2]
     for i in range(state.shape[0]): # number of bodies
         other_bodies = np.concatenate([state[:i, :], state[i+1:, :]], axis=0)
-        displacements = other_bodies[:, 1:3] - state[i, 1:3] # indexes 1:3 -> pxs, pys
+        displacements = other_bodies[:, 1:4] - state[i, 1:4] # indexes 1:3 -> pxs, pys
         distances = (displacements**2).sum(1, keepdims=True)**0.5
         masses = other_bodies[:, 0:1] # index 0 -> mass
         pointwise_accs = masses * displacements / (distances**3 + epsilon) # G=1
@@ -51,10 +51,10 @@ def get_accelerations(state, epsilon=0):
     return net_accs
   
 def update(t, state):
-    state = state.reshape(-1,5) # [bodies, properties]
+    state = state.reshape(-1,7) # [bodies, properties]
     deriv = np.zeros_like(state)
-    deriv[:,1:3] = state[:,3:5] # dx, dy = vx, vy
-    deriv[:,3:5] = get_accelerations(state)
+    deriv[:,1:4] = state[:,4:7] # dx, dy = vx, vy
+    deriv[:,4:7] = get_accelerations(state)
     return deriv.reshape(-1)
 
 
