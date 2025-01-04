@@ -64,7 +64,7 @@ def plot_ground_truth():
     z_placeholder = np.zeros(1000) # z_coord testing
     arr = np.arange(1, 1001)  # Numbers from 1 to 1000
     for i, path in enumerate(orbit):
-        plt.plot(path[1], path[2], arr, label='body {} path'.format(i))
+        plt.plot(path[1], path[2], z_placeholder, label='body {} path'.format(i))
     
     ax.axis('equal')
     ax.set_xlabel('$x$') ; ax.set_ylabel('$y$') ; ax.set_zlabel('$z$')
