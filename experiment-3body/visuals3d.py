@@ -81,9 +81,9 @@ def plot_ground_truth():
     plt.plot(settings['t_eval'], total_energy(orbit), label='total')
     plt.legend()
     plt.xlim(*settings['t_span'])
+    plt.show()
 
     fig.savefig('{}/orbits-dataset.{}'.format(args.fig_dir, FORMAT))
-    plt.show()
     print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', 'orbits-dataset.{}'.format(FORMAT))
 
 
