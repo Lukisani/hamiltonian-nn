@@ -49,6 +49,13 @@ def plot_ground_truth():
     state = random_config()
     orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9) # original t_span = [0,5]
 
+    print('orbit shape:', orbit.shape)
+    print('settings shape:', settings.shape)
+
+    print(orbit)
+    print('\n\n')
+    print(settings)
+
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
     plt.subplot(1,2,1)
