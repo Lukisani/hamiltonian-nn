@@ -8,6 +8,7 @@ sys.path.append(PARENT_DIR)
 from utils import to_pickle
 from data import make_orbits_dataset
 
+
 path = '{}/{}-orbits-dataset.pkl'.format(THIS_DIR, '3body')
 data = make_orbits_dataset(verbose=True)
 print('Dataset created successfully')

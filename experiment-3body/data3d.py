@@ -18,7 +18,7 @@ def potential_energy(state):
     tot_energy = np.zeros((1,1,state.shape[2]))
     for i in range(state.shape[0]):
         for j in range(i+1,state.shape[0]):
-            r_ij = ((state[i:i+1,1:3] - state[j:j+1,1:3])**2).sum(1, keepdims=True)**.5
+            r_ij = ((state[i:i+1,1:4] - state[j:j+1,1:4])**2).sum(1, keepdims=True)**.5
             m_i = state[i:i+1,0:1]
             m_j = state[j:j+1,0:1]
             tot_energy += m_i * m_j / r_ij
@@ -27,7 +27,7 @@ def potential_energy(state):
 
 def kinetic_energy(state):
     '''T=\sum_i .5*m*v^2'''
-    energies = .5 * state[:,0:1] * (state[:,3:5]**2).sum(1, keepdims=True)
+    energies = .5 * state[:,0:1] * (state[:,4:7]**2).sum(1, keepdims=True)
     T = energies.sum(0).squeeze()
     return T
 
@@ -71,43 +71,46 @@ def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **
 
     path = solve_ivp(fun=update_fn, t_span=t_span, y0=state.flatten(),
                      t_eval=t_eval, **kwargs)
-    orbit = path['y'].reshape(nbodies, 5, t_points)
+    orbit = path['y'].reshape(nbodies, 7, t_points)
     return orbit, orbit_settings
 
 
-##### INITIALIZE THE TWO BODIES #####
-def rotate2d(p, theta):
-  c, s = np.cos(theta), np.sin(theta)
-  R = np.array([[c, -s],[s, c]])
-  return (R @ p.reshape(2,1)).squeeze()
+##### INITIALIZE THE THREE BODIES #####
+def rotate3d(p, theta, axis):
+    # General 3D rotation matrix for a given axis
+    c, s = np.cos(theta), np.sin(theta)
+    R = np.eye(3)
+    if axis == 'x':
+        R[1:, 1:] = [[c, -s], [s, c]]
+    elif axis == 'y':
+        R[::2, ::2] = [[c, s], [-s, c]]
+    elif axis == 'z':
+        R[:2, :2] = [[c, -s], [s, c]]
+    return (R @ p.reshape(3, 1)).squeeze()
 
 def random_config(nu=2e-1, min_radius=0.9, max_radius=1.2):
-  '''This is not principled at all yet'''
-  state = np.zeros((3,5))
-  state[:,0] = 1
-  p1 = 2*np.random.rand(2) - 1
-  r = np.random.rand() * (max_radius-min_radius) + min_radius
-  
-  p1 *= r/np.sqrt( np.sum((p1**2)) )
-  p2 = rotate2d(p1, theta=2*np.pi/3)
-  p3 = rotate2d(p2, theta=2*np.pi/3)
+    state = np.zeros((3, 7))
+    state[:, 0] = 1  # Masses
+    p1 = 2 * np.random.rand(3) - 1
+    r = np.random.rand() * (max_radius - min_radius) + min_radius
+    
+    p1 *= r / np.sqrt(np.sum((p1**2)))
+    p2 = rotate3d(p1, theta=2*np.pi/3, axis='z')
+    p3 = rotate3d(p2, theta=2*np.pi/3, axis='z')
 
-  # # velocity that yields a circular orbit
-  v1 = rotate2d(p1, theta=np.pi/2)
-  v1 = v1 / r**1.5
-  v1 = v1 * np.sqrt(np.sin(np.pi/3)/(2*np.cos(np.pi/6)**2)) # scale factor to get circular trajectories
-  v2 = rotate2d(v1, theta=2*np.pi/3)
-  v3 = rotate2d(v2, theta=2*np.pi/3)
-  
-  # make the circular orbits slightly chaotic
-  v1 *= 1 + nu*(2*np.random.rand(2) - 1)
-  v2 *= 1 + nu*(2*np.random.rand(2) - 1)
-  v3 *= 1 + nu*(2*np.random.rand(2) - 1)
+    v1 = rotate3d(p1, theta=np.pi/2, axis='z') / r**1.5
+    v1 *= np.sqrt(np.sin(np.pi/3)/(2*np.cos(np.pi/6)**2))  # Circular orbit scaling
+    v2 = rotate3d(v1, theta=2*np.pi/3, axis='z')
+    v3 = rotate3d(v2, theta=2*np.pi/3, axis='z')
 
-  state[0,1:3], state[0,3:5] = p1, v1
-  state[1,1:3], state[1,3:5] = p2, v2
-  state[2,1:3], state[2,3:5] = p3, v3
-  return state
+    v1 *= 1 + nu * (2*np.random.rand(3) - 1)
+    v2 *= 1 + nu * (2*np.random.rand(3) - 1)
+    v3 *= 1 + nu * (2*np.random.rand(3) - 1)
+
+    state[0, 1:4], state[0, 4:7] = p1, v1
+    state[1, 1:4], state[1, 4:7] = p2, v2
+    state[2, 1:4], state[2, 4:7] = p3, v3
+    return state
 
 
 ##### INTEGRATE AN ORBIT OR TWO #####
@@ -124,19 +127,19 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
 
         state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
         orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
-        batch = orbit.transpose(2,0,1).reshape(-1,nbodies*5)
+        batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
 
         for state in batch:
             dstate = update(None, state)
             
             # reshape from [nbodies, state] where state=[m, qx, qy, px, py]
             # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
-            coords = state.reshape(nbodies,5).T[1:].flatten()
-            dcoords = dstate.reshape(nbodies,5).T[1:].flatten()
+            coords = state.reshape(nbodies,7).T[1:].flatten()
+            dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
             x.append(coords)
             dx.append(dcoords)
 
-            shaped_state = state.copy().reshape(nbodies,5,1)
+            shaped_state = state.copy().reshape(nbodies,7,1)
             e.append(total_energy(shaped_state))
 
     data = {'coords': np.stack(x)[:N],
