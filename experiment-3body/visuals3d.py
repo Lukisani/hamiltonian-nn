@@ -49,19 +49,21 @@ def plot_ground_truth():
     state = random_config()
     orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9) # original t_span = [0,5]
 
-    print('orbit shape:', orbit.shape)
-    # print('settings shape:', settings.shape)
+    # print('orbit shape:', orbit.shape)
+    # # print('settings shape:', settings.shape)
 
-    print(orbit)
-    print('\n\n')
-    print(settings)
-
+    # print(orbit)
+    # print('\n\n')
+    # print(settings)
+    
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
     plt.subplot(1,2,1)
     plt.title('Trajectories')
+    z_placeholder = np.array(0 for i in range(1000)) # z_coord testing
     for i, path in enumerate(orbit):
-        plt.plot(path[1], path[2], label='body {} path'.format(i))
+        plt.plot(path[1], path[2], z_placeholder, label='body {} path'.format(i))
+    
 
     plt.axis('equal')
     plt.xlabel('$x$') ; plt.ylabel('$y$')
