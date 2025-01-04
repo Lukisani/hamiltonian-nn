@@ -59,7 +59,7 @@ def plot_ground_truth():
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
     ax = fig.add_subplot(1, 2, 1, projection='3d')  # 3D subplot
-    #plt.subplot(1,2,1)
+    # plt.subplot(1,2,1)
     ax.set_title('Trajectories')
     z_placeholder = np.zeros(1000) # z_coord testing
     cooler_placeholder = np.linspace(-1, 1, 1000)  # Numbers from 1 to 1000
@@ -136,18 +136,20 @@ def what_has_baseline_learned():
     ls=12
 
     fig = plt.figure(figsize=[15,4], dpi=100)
-    plt.subplot(1,3,1)
-    plt.title('Trajectories', fontsize=ts, pad=tpad)
+    ax = fig.add_subplot(1, 3, 1, projection='3d')  # 3D subplot
+    # plt.subplot(1,3,1)
+    ax.set_title('Trajectories')
+    z_placeholder = np.zeros(t_points) # z_coord testing
     colors = ['orange', 'purple', 'blue']
     for i, path in enumerate(orbit):
-        plt.plot(path[1], path[2], '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
+        plt.plot(path[1], path[2], z_placeholder, '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
         
     for i, path in enumerate(base_orbit):
-        plt.plot(path[1], path[2], '--', c=colors[i], label='NN path, body {}'.format(i), linewidth=2)
+        plt.plot(path[1], path[2], z_placeholder, '--', c=colors[i], label='NN path, body {}'.format(i), linewidth=2)
 
-    plt.axis('equal')
-    plt.xlabel('$x$', fontsize=ls) ; plt.ylabel('$y$', fontsize=ls)
-    plt.legend(fontsize=fs)
+    ax.axis('equal')
+    ax.set_xlabel('$x$', fontsize=ls) ; ax.set_ylabel('$y$', fontsize=ls) ; ax.set_zlabel('$z$', fontsize=ls)
+    ax.legend(fontsize=fs)
 
     plt.subplot(1,3,2)
     real_pe, real_ke, real_etot = potential_energy(orbit), kinetic_energy(orbit), total_energy(orbit)
