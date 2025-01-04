@@ -67,7 +67,7 @@ def plot_ground_truth():
         plt.plot(path[1], path[2], arr, label='body {} path'.format(i))
     
     ax.axis('equal')
-    ax.set_xlabel('$x$') ; plt.set_ylabel('$y$') ; plt.set_zlabel('$z$')
+    ax.set_xlabel('$x$') ; ax.set_ylabel('$y$') ; ax.set_zlabel('$z$')
     ax.legend(fontsize=8)
 
     plt.axis('equal')
