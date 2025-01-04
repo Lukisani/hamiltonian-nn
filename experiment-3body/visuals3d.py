@@ -37,7 +37,7 @@ def get_args():
          'name': '3body',
          'seed': 0,
          'save_dir': '{}'.format(EXPERIMENT_DIR),
-         'fig_dir': './figures/2Dfigures'}
+         'fig_dir': './figures'}
 
 class ObjectView(object):
     def __init__(self, d): self.__dict__ = d
