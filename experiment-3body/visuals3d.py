@@ -65,9 +65,12 @@ def plot_ground_truth():
     for i, path in enumerate(orbit):
         plt.plot(path[1], path[2], z_placeholder, label='body {} path'.format(i))
     
+    ax.axis('equal')
+    ax.xlabel('$x$') ; plt.ylabel('$y$') ; plt.zlabel('$z$')
+    ax.legend(fontsize=8)
 
     plt.axis('equal')
-    plt.xlabel('$x$') ; plt.ylabel('$y$') ; plt.zlabel('$z$')
+    plt.xlabel('$x$') ; plt.ylabel('$y$')
     plt.legend(fontsize=8)
 
     plt.subplot(1,2,2)
