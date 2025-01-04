@@ -60,7 +60,7 @@ def plot_ground_truth():
     fig = plt.figure(figsize=[10,4], dpi=100)
     plt.subplot(1,2,1)
     plt.title('Trajectories')
-    z_placeholder = np.array(0 for i in range(1000)) # z_coord testing
+    z_placeholder = np.zeros(1000) # z_coord testing
     for i, path in enumerate(orbit):
         plt.plot(path[1], path[2], z_placeholder, label='body {} path'.format(i))
     
