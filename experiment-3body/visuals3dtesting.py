@@ -58,7 +58,7 @@ def plot_ground_truth():
         plt.plot(path[1], path[2], cool_placeholder, label='body {} path'.format(i))
 
     plt.axis('equal')
-    plt.set_xlabel('$x$') ; plt.set_ylabel('$y$') ; plt.set_zlabel('$z$')
+    plt.xlabel('$x$') ; plt.ylabel('$y$') ; plt.zlabel('$z$')
     plt.legend(fontsize=8)
 
     plt.subplot(1,2,2)
