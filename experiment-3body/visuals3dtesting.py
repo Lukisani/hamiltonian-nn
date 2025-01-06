@@ -55,7 +55,7 @@ def plot_ground_truth():
     ax.set_title('Trajectories')
     cool_placeholder = np.linspace(-2,2, 1000)
     for i, path in enumerate(orbit):
-        ax.plot(path[1], path[2], cool_placeholder, label='body {} path'.format(i))
+        plt.plot(path[1], path[2], cool_placeholder, label='body {} path'.format(i))
 
     ax.axis('equal')
     ax.set_xlabel('$x$') ; ax.set_ylabel('$y$') ; ax.set_zlabel('$z$')
