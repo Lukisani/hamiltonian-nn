@@ -44,6 +44,7 @@ class ObjectView(object):
 
 
 def plot_ground_truth():
+    plt.ion()
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
@@ -70,6 +71,8 @@ def plot_ground_truth():
     plt.xlim(*settings['t_span'])
 
     fig.savefig('{}/orbits-dataset.{}'.format(args.fig_dir, FORMAT))
+    plt.draw()
+    plt.pause(0.1)
     plt.show()
     print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', 'orbits-dataset.{}'.format(FORMAT))
 
