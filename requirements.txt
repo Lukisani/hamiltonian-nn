@@ -5,3 +5,4 @@ imageio
 scipy
 matplotlib
 jupyter
+ipympl
