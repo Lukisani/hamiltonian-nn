@@ -50,7 +50,7 @@ def plot_ground_truth():
     orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9) # original t_span = [0,5]
 
     # draw trajectories
-    fig = plt.figure(figsize=[10,4], dpi=100)
+    fig = ax.figure(figsize=[10,4], dpi=100)
     ax.subplot(1,2,1)
     ax.title('Trajectories', projection='3d')
     cool_placeholder = np.linspace(-2,2, 1000)
