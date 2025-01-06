@@ -41,7 +41,7 @@ def get_accelerations(state, epsilon=0):
     net_accs = [] # [nbodies x 2]
     for i in range(state.shape[0]): # number of bodies
         other_bodies = np.concatenate([state[:i, :], state[i+1:, :]], axis=0)
-        displacements = other_bodies[:, 1:4] - state[i, 1:4] # indexes 1:3 -> pxs, pys
+        displacements = other_bodies[:, 1:4] - state[i, 1:4] # indexes 1:3 -> pxs, pys, pyz
         distances = (displacements**2).sum(1, keepdims=True)**0.5
         masses = other_bodies[:, 0:1] # index 0 -> mass
         pointwise_accs = masses * displacements / (distances**3 + epsilon) # G=1
@@ -53,7 +53,7 @@ def get_accelerations(state, epsilon=0):
 def update(t, state):
     state = state.reshape(-1,7) # [bodies, properties]
     deriv = np.zeros_like(state)
-    deriv[:,1:4] = state[:,4:7] # dx, dy = vx, vy
+    deriv[:,1:4] = state[:,4:7] # dx, dy, dz = vx, vy, dz
     deriv[:,4:7] = get_accelerations(state)
     return deriv.reshape(-1)
 
@@ -135,7 +135,7 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
         for state in batch:
             dstate = update(None, state)
             
-            # reshape from [nbodies, state] where state=[m, qx, qy, px, py]
+            # reshape from [nbodies, state] where state=[m, qx, qy, qz, px, py, pz]
             # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
             coords = state.reshape(nbodies,7).T[1:].flatten()
             dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
