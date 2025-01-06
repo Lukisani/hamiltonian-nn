@@ -53,7 +53,7 @@ def plot_ground_truth():
     fig = plt.figure(figsize=[10,4], dpi=100)
     ax = fig.add_subplot(1,2,1, projection='3d')
     ax.set_title('Trajectories')
-    cool_placeholder = np.linspace(-2,2, 1000)
+    cool_placeholder = np.linspace(-10, 10, 1000)
     for i, path in enumerate(orbit):
         plt.plot(path[1], path[2], cool_placeholder, label='body {} path'.format(i))
 
