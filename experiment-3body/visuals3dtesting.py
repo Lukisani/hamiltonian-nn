@@ -51,13 +51,14 @@ def plot_ground_truth():
 
     # draw trajectories
     fig = plt.figure(figsize=[10,4], dpi=100)
-    plt.subplot(1,2,1)
-    plt.title('Trajectories')
+    ax.subplot(1,2,1)
+    ax.title('Trajectories', projection='3d')
+    cool_placeholder = np.linspace(-2,2, 1000)
     for i, path in enumerate(orbit):
-        plt.plot(path[1], path[2], label='body {} path'.format(i))
+        ax.plot(path[1], path[2], cool_placeholder, label='body {} path'.format(i))
 
-    plt.axis('equal')
-    plt.xlabel('$x$') ; plt.ylabel('$y$')
+    ax.axis('equal')
+    ax.set_xlabel('$x$') ; ax.set_ylabel('$y$') ; ax.set_zlabel('$z$')
     plt.legend(fontsize=8)
 
     plt.subplot(1,2,2)
