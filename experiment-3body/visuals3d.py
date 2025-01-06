@@ -68,7 +68,7 @@ def plot_ground_truth(plot3d=False):
         z_placeholder = np.zeros(1000) # z_coord testing
         cooler_placeholder = np.linspace(-1, 1, 1000)  # Numbers from 1 to 1000
         for i, path in enumerate(orbit):
-            plt.plot(path[1], path[2], cooler_placeholder, label='body {} path'.format(i))
+            plt.plot(path[1], path[2], z_placeholder, label='body {} path'.format(i))
     
     
     ax.axis('equal')
