@@ -1,3 +1,5 @@
+#not used in actual program, just for testing changes to data3d
+
 import numpy as np
 import scipy
 solve_ivp = scipy.integrate.solve_ivp
