@@ -1,3 +1,5 @@
+# For testing efficacy of models (using MSE for now)
+
 # -*- coding: utf-8 -*-
 
 import os, sys
