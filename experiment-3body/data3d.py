@@ -74,7 +74,7 @@ def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **
                      t_eval=t_eval, **kwargs)
     print('finished path')
     orbit = path['y'].reshape(nbodies, 7, t_points)
-    print('get_orbits complete\n')
+    print('get_orbits complete\n') # debugging
     return orbit, orbit_settings
 
 
@@ -128,7 +128,7 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
     N = timesteps*trials
     while len(x) < N:
         if len(x) % 10 == 0:
-            print('len(x) =', len(x))
+            print('len(x) =', len(x)) # for debugging
 
         state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
         orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
