@@ -1,3 +1,6 @@
+# initial visualization script we worked on - not used in main program
+
+
 # -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 import numpy as np

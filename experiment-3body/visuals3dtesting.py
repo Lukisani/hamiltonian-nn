@@ -1,3 +1,5 @@
+# this script was for testing the 3d visuals, substituting the 3rd body for a placeholder
+
 import os, sys
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
