@@ -3,11 +3,11 @@
 
 import numpy as np
 import scipy
-import csv
 solve_ivp = scipy.integrate.solve_ivp
 
 import os, sys
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(parent_dir)
 
 from utils import to_pickle, from_pickle

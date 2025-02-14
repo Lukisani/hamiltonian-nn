@@ -6,7 +6,8 @@ import numpy as np
 
 import os, sys
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PARENT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(PARENT_DIR)
 
 from nn_models import MLP
