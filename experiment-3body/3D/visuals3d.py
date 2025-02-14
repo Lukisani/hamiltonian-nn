@@ -11,6 +11,7 @@ EXPERIMENT_DIR = './experiment-3body'
 sys.path.append(EXPERIMENT_DIR)
 
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PARENT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(PARENT_DIR)
 sys.path.append(PARENT_DIR)
 
