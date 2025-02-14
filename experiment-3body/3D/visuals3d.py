@@ -11,6 +11,7 @@ EXPERIMENT_DIR = './experiment-3body'
 sys.path.append(EXPERIMENT_DIR)
 
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(PARENT_DIR)
 sys.path.append(PARENT_DIR)
 
 from nn_models import MLP
@@ -60,10 +61,10 @@ def plot_ground_truth(plot3d=False):
     fig = plt.figure(figsize=[10,4], dpi=100)
     ax = fig.add_subplot(1, 2, 1, projection='3d')  # 3D subplot
     ax.set_title('Trajectories')
-    if  plot3d:
+    if  plot3d: #plots using 3d coords
         for i, path in enumerate(orbit):
             plt.plot(path[1], path[2], path[3], label='body {} path'.format(i))
-    else:
+    else: # plots using placeholder for z coord (2D but in fake 3D)
         # plt.subplot(1,2,1)
         z_placeholder = np.zeros(1000) # z_coord testing
         cooler_placeholder = np.linspace(-1, 1, 1000)  # Numbers from 1 to 1000
