@@ -108,15 +108,29 @@ def plot_ground_truth(plot3d=False):
 # base_model = load_model(args, baseline=True)
 # hnn_model = load_model(args, baseline=False)
 
-def model_update(t, state, model):
-    state = state.reshape(-1,5)
+# def model_update(t, state, model):
+#     state = state.reshape(-1,5)
 
+#     deriv = np.zeros_like(state)
+#     np_x = state[:,1:] # drop mass
+#     np_x = np_x.T.flatten()[None, :]
+#     x = torch.tensor( np_x, requires_grad=True, dtype=torch.float32)
+#     dx_hat = model.time_derivative(x)
+#     deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
+#     return deriv.reshape(-1)
+
+def model_update(t, state, model):
+    state = state.reshape(-1,7)  # 3D correction: [bodies x 7]
+    
     deriv = np.zeros_like(state)
-    np_x = state[:,1:] # drop mass
-    np_x = np_x.T.flatten()[None, :]
-    x = torch.tensor( np_x, requires_grad=True, dtype=torch.float32)
-    dx_hat = model.time_derivative(x)
-    deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
+    np_x = state[:,1:]  # [bodies x 6] (x,y,z,vx,vy,vz)
+    np_x = np_x.flatten()[None, :]  # [1, 3*6]
+    
+    x = torch.tensor(np_x, requires_grad=True, dtype=torch.float32)
+    dx_hat = model.time_derivative(x)  # [1, 3*6]
+    
+    # Reshape to [bodies x 6] and assign to deriv
+    deriv[:,1:] = dx_hat.detach().numpy().reshape(3,6)
     return deriv.reshape(-1)
 
 def what_has_baseline_learned(base_model, args, plot3d=False):
