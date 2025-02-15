@@ -119,7 +119,7 @@ def model_update(t, state, model):
     deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
     return deriv.reshape(-1)
 
-def what_has_baseline_learned(base_model):
+def what_has_baseline_learned():
 
     global base_orbit
 
