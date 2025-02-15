@@ -69,12 +69,9 @@ def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **
     t_eval = np.linspace(t_span[0], t_span[1], t_points)
     orbit_settings['t_eval'] = t_eval
 
-    print('doing path')
     path = solve_ivp(fun=update_fn, t_span=t_span, y0=state.flatten(),
                      t_eval=t_eval, **kwargs)
-    print('finished path')
     orbit = path['y'].reshape(nbodies, 7, t_points)
-    print('get_orbits complete\n') # debugging
     return orbit, orbit_settings
 
 
