@@ -5,6 +5,7 @@ import numpy as np
 import scipy.integrate
 import multiprocessing as mp
 from functools import partial
+from tqdm import tqdm
 
 solve_ivp = scipy.integrate.solve_ivp
 
@@ -147,23 +148,35 @@ def simulate_orbit(timesteps, nbodies, orbit_noise, min_radius, max_radius, t_sp
         
     return x, dx, e
 
-def sample_orbits_parallel(timesteps=20, trials=10, nbodies=3, orbit_noise=2e-1,
+# --- Worker function for multiprocessing with extra kwargs ---
+def worker_func(args, orbit_kwargs):
+    """
+    Unpacks args and passes additional keyword arguments.
+    This function is defined at the top level so it can be pickled.
+    """
+    return simulate_orbit(*args, **orbit_kwargs)
+
+##### PARALLEL ORBIT SAMPLING WITH PROGRESS BAR #####
+def sample_orbits_parallel(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
                            min_radius=0.9, max_radius=1.2, t_span=[0, 5],
-                           nprocs=4, **kwargs):
+                           nprocs=mp.cpu_count(), **kwargs):
     """
     Run orbit simulations in parallel using multiprocessing.
     Each process simulates one orbit (which gives several time steps/samples).
+    A tqdm progress bar is displayed to show progress.
     """
-    # Create a pool of worker processes
-    pool = mp.Pool(nprocs)
-    
-    # Prepare arguments for each trial
+    # Create a list of argument tuples, one per trial
     arg_list = [(timesteps, nbodies, orbit_noise, min_radius, max_radius, t_span)
                 for _ in range(trials)]
     
-    # Use partial to create a pickle-able function that includes the kwargs
-    func = partial(simulate_orbit, **kwargs)
-    results = pool.starmap(func, arg_list)
+    # Prepare a worker function that includes additional kwargs via partial
+    worker = partial(worker_func, orbit_kwargs=kwargs)
+    
+    pool = mp.Pool(nprocs)
+    results = []
+    # Use imap_unordered wrapped with tqdm for a progress bar
+    for res in tqdm(pool.imap_unordered(worker, arg_list), total=len(arg_list), desc="Generating orbits"):
+        results.append(res)
     
     pool.close()
     pool.join()
@@ -187,14 +200,14 @@ def sample_orbits_parallel(timesteps=20, trials=10, nbodies=3, orbit_noise=2e-1,
 def make_orbits_dataset(test_split=0.2, **kwargs):
     data = sample_orbits_parallel(**kwargs)
     
-    # make a train/test split
+    # Make a train/test split
     split_ix = int(data['coords'].shape[0] * test_split)
     split_data = {}
     for k, v in data.items():
         split_data[k], split_data['test_' + k] = v[split_ix:], v[:split_ix]
     data = split_data
 
-    data['meta'] = kwargs  # or add additional metadata as needed
+    data['meta'] = kwargs  # You can add additional metadata as needed
     return data
 
 ##### LOAD OR SAVE THE DATASET #####
@@ -216,10 +229,10 @@ def get_dataset(experiment_name, save_dir, **kwargs):
 
 # For multiprocessing safety on Windows, include this guard
 if __name__ == '__main__':
-    # Example: adjust timesteps, trials, and nprocs as needed
+    # Example: adjust timesteps, trials, etc. as needed.
     data = sample_orbits_parallel(timesteps=20, trials=10, nbodies=3, 
                                   orbit_noise=2e-1, min_radius=0.9, max_radius=1.2, 
-                                  t_span=[0, 5], nprocs=4)
+                                  t_span=[0, 5])
     print("Data shapes:")
     print("coords:", data['coords'].shape)
     print("dcoords:", data['dcoords'].shape)
