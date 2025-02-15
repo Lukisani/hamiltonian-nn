@@ -103,7 +103,7 @@ def model_update(t, state, model):
     deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
     return deriv.reshape(-1)
 
-def what_has_baseline_learned():
+def what_has_baseline_learned(base_model,args):
 
     global base_orbit
 
@@ -167,7 +167,7 @@ def what_has_baseline_learned():
     print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-base-example.{}'.format(FORMAT))
 
 
-def what_has_hnn_learned():
+def what_has_hnn_learned(hnn_model,args):
 
     global hnn_orbit
 
