@@ -61,7 +61,7 @@ def update(t, state):
 ##### INTEGRATION SETTINGS #####
 def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **kwargs):
     if not 'rtol' in kwargs.keys():
-        kwargs['rtol'] = 1e-9
+        kwargs['rtol'] = 1e-6 # was -9 before...
 
     orbit_settings = locals()
 
