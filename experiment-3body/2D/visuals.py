@@ -37,7 +37,7 @@ def get_args():
          'verbose': True,
          'name': '3body',
          'seed': 0,
-         'save_dir': '{}'.format(EXPERIMENT_DIR),
+         'save_dir': '{}/2D'.format(EXPERIMENT_DIR),
          'fig_dir': './figures/2Dfigures'}
 
 class ObjectView(object):
