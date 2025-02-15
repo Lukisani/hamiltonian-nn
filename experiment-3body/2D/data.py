@@ -122,9 +122,6 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
     N = timesteps*trials
     while len(x) < N:
 
-        if len(x) % 100 == 0:
-            print('len(x) =', len(x)) # for debugging
-
         state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
         orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
         batch = orbit.transpose(2,0,1).reshape(-1,nbodies*5)

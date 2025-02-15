@@ -117,8 +117,8 @@ def random_config(nu=2e-1, min_radius=0.9, max_radius=1.2):
 
 
 ##### INTEGRATE AN ORBIT OR TWO #####
-def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
-                  min_radius=0.9, max_radius=1.2, t_span=[0, 5], verbose=False, **kwargs):
+def sample_orbits(timesteps=20, trials=500, nbodies=3, orbit_noise=2e-1,
+                  min_radius=0.9, max_radius=1.2, t_span=[0, 5], verbose=False, **kwargs): #trials were at 5000 before - reduced to make dataset generation faster
     
     orbit_settings = locals()
     if verbose:
