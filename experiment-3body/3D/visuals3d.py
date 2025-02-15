@@ -17,8 +17,8 @@ sys.path.append(PARENT_DIR)
 from nn_models import MLP
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
-from data import get_dataset, get_orbit, random_config
-from data import potential_energy, kinetic_energy, total_energy
+from data3d import get_dataset, get_orbit, random_config # convert to data3d after debugging
+from data3d import potential_energy, kinetic_energy, total_energy
 
 DPI = 300
 FORMAT = 'pdf'
@@ -37,7 +37,7 @@ def get_args():
          'verbose': True,
          'name': '3body',
          'seed': 0,
-         'save_dir': '{}/2D'.format(EXPERIMENT_DIR), # remember to change this later to the 3D model directoryyyyyyyyyyyyy
+         'save_dir': '{}/3D'.format(EXPERIMENT_DIR), # remember to change this later to the 3D model directoryyyyyyyyyyyyy
          'fig_dir': './figures/3Dfigures'}
 
 class ObjectView(object):
@@ -119,7 +119,7 @@ def model_update(t, state, model):
     deriv[:,1:] = dx_hat.detach().data.numpy().reshape(4,3).T
     return deriv.reshape(-1)
 
-def what_has_baseline_learned(base_model, args):
+def what_has_baseline_learned(base_model, args, plot3d=False):
 
     global base_orbit
 
@@ -145,13 +145,20 @@ def what_has_baseline_learned(base_model, args):
     ax = fig.add_subplot(1, 3, 1, projection='3d')  # 3D subplot
     # plt.subplot(1,3,1)
     ax.set_title('Trajectories')
-    z_placeholder = np.zeros(t_points) # z_coord testing
     colors = ['orange', 'purple', 'blue']
-    for i, path in enumerate(orbit):
-        plt.plot(path[1], path[2], z_placeholder, '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
+    if plot3d:
+        for i, path in enumerate(orbit):
+            plt.plot(path[1], path[2], path[3], '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
         
-    for i, path in enumerate(base_orbit):
-        plt.plot(path[1], path[2], z_placeholder, '--', c=colors[i], label='NN path, body {}'.format(i), linewidth=2)
+        for i, path in enumerate(base_orbit):
+            plt.plot(path[1], path[2], path[3], '--', c=colors[i], label='NN path, body {}'.format(i), linewidth=2)
+    else:
+        z_placeholder = np.zeros(t_points) # z_coord testing
+        for i, path in enumerate(orbit):
+            plt.plot(path[1], path[2], z_placeholder, '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
+            
+        for i, path in enumerate(base_orbit):
+            plt.plot(path[1], path[2], z_placeholder, '--', c=colors[i], label='NN path, body {}'.format(i), linewidth=2)
 
     ax.axis('equal')
     ax.set_xlabel('$x$', fontsize=ls) ; ax.set_ylabel('$y$', fontsize=ls) ; ax.set_zlabel('$z$', fontsize=ls)
