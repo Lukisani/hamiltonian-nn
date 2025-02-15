@@ -27,16 +27,24 @@ def potential_energy_vec(state, epsilon=1e-8):
     batch, nbodies, _ = state.shape
     masses = state[:, :, 0:1]    # shape: (batch, nbodies, 1)
     pos = state[:, :, 1:4]       # shape: (batch, nbodies, 3)
+    
     # Compute pairwise displacement vectors: (batch, nbodies, nbodies, 3)
     diff = pos[:, :, None, :] - pos[:, None, :, :]
-    # Compute distances; keep an extra dim for broadcasting: (batch, nbodies, nbodies, 1)
-    dist = np.linalg.norm(diff, axis=-1, keepdims=True)
-    # Avoid self-interaction by adding a large number on the diagonal
-    eye = np.eye(nbodies)[None, :, :, None]
+    
+    # Compute distances without the extra dimension: (batch, nbodies, nbodies)
+    dist = np.linalg.norm(diff, axis=-1)
+    
+    # Avoid self-interaction by setting the diagonal to a large number
+    eye = np.eye(nbodies)[None, :, :]
     dist += eye * 1e6
+
+    # Compute pairwise energy contributions.
+    # masses: (batch, nbodies, 1), masses.transpose: (batch, 1, nbodies)
     energy_matrix = masses * masses.transpose(0, 2, 1) / (dist + epsilon)
+    
+    # Each pair is counted twice, so sum over both body axes and divide by 2.
     tot_energy = -0.5 * energy_matrix.sum(axis=(1, 2))
-    return tot_energy.squeeze()
+    return tot_energy
 
 def kinetic_energy_vec(state):
     """
@@ -100,8 +108,8 @@ def update(t, state):
     """
     state = state.reshape(-1, 7)
     deriv = np.zeros_like(state)
-    deriv[:, 1:4] = state[:, 4:7]         # derivative of position = velocity
-    deriv[:, 4:7] = get_accelerations(state)  # derivative of velocity = acceleration
+    deriv[:, 1:4] = state[:, 4:7]            # derivative of position = velocity
+    deriv[:, 4:7] = get_accelerations(state)   # derivative of velocity = acceleration
     return deriv.reshape(-1)
 
 def update_vec(state):
