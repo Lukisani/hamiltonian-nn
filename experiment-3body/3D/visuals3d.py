@@ -17,15 +17,15 @@ sys.path.append(PARENT_DIR)
 from nn_models import MLP
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
-from data import get_dataset, get_orbit, random_config # convert to data3d after debugging
-from data import potential_energy, kinetic_energy, total_energy
+from data3d import get_dataset, get_orbit, random_config # convert to data3d after debugging
+from data3d import potential_energy, kinetic_energy, total_energy
 
 DPI = 300
 FORMAT = 'pdf'
 
 
 def get_args():
-    return {'input_dim': 3*4, # two bodies, each with q_x, q_y, p_z, p_y
+    return {'input_dim': 3*6, # two bodies, each with q_x, q_y, p_z, p_y
          'hidden_dim': 200,
          'learn_rate': 1e-3,
          'input_noise': 0.,
@@ -37,7 +37,7 @@ def get_args():
          'verbose': True,
          'name': '3body',
          'seed': 0,
-         'save_dir': '{}/2D'.format(EXPERIMENT_DIR), # remember to change this later to the 3D model directoryyyyyyyyyyyyy
+         'save_dir': '{}/3D'.format(EXPERIMENT_DIR), # remember to change this later to the 3D model directoryyyyyyyyyyyyy
          'fig_dir': './figures/3Dfigures'}
 
 class ObjectView(object):
