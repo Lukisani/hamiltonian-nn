@@ -2,6 +2,7 @@
 # Sam Greydanus, Misko Dzamba, Jason Yosinski
 
 import numpy as np
+import multiprocessing as mp
 import scipy
 solve_ivp = scipy.integrate.solve_ivp
 
