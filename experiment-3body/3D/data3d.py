@@ -127,7 +127,7 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
     x, dx, e = [], [], []
     N = timesteps*trials
     while len(x) < N:
-        if len(x) % 10 == 0:
+        if len(x) % 100 == 0:
             print('len(x) =', len(x)) # for debugging
 
         state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
