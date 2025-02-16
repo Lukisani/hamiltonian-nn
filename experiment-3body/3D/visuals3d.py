@@ -206,7 +206,7 @@ def what_has_baseline_learned(base_model, args, plot3d=False):
     print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-base-example.{}'.format(FORMAT))
 
 
-def what_has_hnn_learned(hnn_model, args):
+def what_has_hnn_learned(hnn_model, args, plot3d=False):
 
     global hnn_orbit
 
@@ -227,18 +227,27 @@ def what_has_hnn_learned(hnn_model, args):
     ls=12
 
     fig = plt.figure(figsize=[15,4], dpi=100)
-    plt.subplot(1,3,1)
-    plt.title('Trajectories', fontsize=ts, pad=tpad)
+    ax = fig.add_subplot(1, 3, 1, projection='3d')  # 3D subplot
+    # plt.subplot(1,3,1)
+    # plt.title('Trajectories', fontsize=ts, pad=tpad)
+    ax.set_title('Trajectories')
     colors = ['orange', 'purple', 'blue']
-    for i, path in enumerate(orbit):
-        plt.plot(path[1], path[2], '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
+    if plot3d:
+        for i, path in enumerate(orbit):
+            plt.plot(path[1], path[2], path[3], '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
+            
+        for i, path in enumerate(hnn_orbit):
+            plt.plot(path[1], path[2], path[3], '--', c=colors[i], label='HNN path, body {}'.format(i), linewidth=2)
+    else:
+        z_placeholder = np.zeros(t_points) # placeholder for fake 3d coords
+        for i, path in enumerate(orbit):
+            plt.plot(path[1], path[2], z_placeholder, '-', c=colors[i], label='True path, body {}'.format(i), linewidth=2)
         
-    for i, path in enumerate(hnn_orbit):
-        plt.plot(path[1], path[2], '--', c=colors[i], label='NN path, body {}'.format(i), linewidth=2)
-
-    plt.axis('equal')
-    plt.xlabel('$x$', fontsize=ls) ; plt.ylabel('$y$', fontsize=ls)
-    plt.legend(fontsize=fs)
+        for i, path in enumerate(hnn_orbit):
+            plt.plot(path[1], path[2], z_placeholder, '--', c=colors[i], label='HNN path, body {}'.format(i), linewidth=2)
+    ax.axis('equal')
+    ax.xlabel('$x$', fontsize=ls) ; ax.ylabel('$y$', fontsize=ls) ; ax.set_zlabel('$z$', fontsize=ls)
+    ax.legend(fontsize=fs)
 
     plt.subplot(1,3,2)
     real_pe, real_ke, real_etot = potential_energy(orbit), kinetic_energy(orbit), total_energy(orbit)
@@ -254,7 +263,7 @@ def what_has_hnn_learned(hnn_model, args):
     plt.ylim(ymin, ymax)
 
     plt.subplot(1,3,3)
-    plt.title('Baseline NN energy', fontsize=ts, pad=tpad)
+    plt.title('HNN energy', fontsize=ts, pad=tpad)
     plt.xlabel('Time')
     plt.plot(settings['t_eval'], potential_energy(hnn_orbit), 'g:', label='Potential', linewidth=lw)
     plt.plot(settings['t_eval'], kinetic_energy(hnn_orbit), 'c-.', label='Kinetic', linewidth=lw)
