@@ -246,7 +246,7 @@ def what_has_hnn_learned(hnn_model, args, plot3d=False):
         for i, path in enumerate(hnn_orbit):
             plt.plot(path[1], path[2], z_placeholder, '--', c=colors[i], label='HNN path, body {}'.format(i), linewidth=2)
     ax.axis('equal')
-    ax.xlabel('$x$', fontsize=ls) ; ax.ylabel('$y$', fontsize=ls) ; ax.set_zlabel('$z$', fontsize=ls)
+    ax.set_xlabel('$x$', fontsize=ls) ; ax.set_ylabel('$y$', fontsize=ls) ; ax.set_zlabel('$z$', fontsize=ls)
     ax.legend(fontsize=fs)
 
     plt.subplot(1,3,2)
