@@ -233,70 +233,77 @@ def what_has_hnn_learned():
 
 
 
-def visualize_all_orbits():
+def visualize_all_orbits(base_model, hnn_model, args, plot3d=True):
+    global base_orbit, hnn_orbit
 
     np.random.seed(0)
     t_points = 2000
-    t_span = [0,5]
+    t_span = [0, 5]
     state = random_config()
 
     orbit, settings = get_orbit(state, t_points=t_points, t_span=t_span)
 
     def plot_orbits(fig, k, tail=10000, pfrac=0.05, fs=28, ms=40, lw=3, tpad=15):
-        xmin = ymin = np.min([orbit[:,1,:].min(), orbit[:,2,:].min()])
-        xmax = ymax = np.max([orbit[:,1,:].max(), orbit[:,2,:].max()])
-        pad = (xmax-xmin)*pfrac
-        xmin -= pad
-        xmax += pad
-        ymin -= pad
-        ymax += pad
+        # Calculate min and max for all axes based on ground truth
+        xmin, xmax = orbit[:,1,:].min(), orbit[:,1,:].max()
+        ymin, ymax = orbit[:,2,:].min(), orbit[:,2,:].max()
+        zmin, zmax = orbit[:,3,:].min(), orbit[:,3,:].max()
+
+        # Apply padding
+        pad_x = (xmax - xmin) * pfrac
+        xmin -= pad_x
+        xmax += pad_x
+        pad_y = (ymax - ymin) * pfrac
+        ymin -= pad_y
+        ymax += pad_y
+        pad_z = (zmax - zmin) * pfrac
+        zmin -= pad_z
+        zmax += pad_z
 
         colors = [(0,0,0), (.6,.6,.6), (.8,.8,.8)]
-        t = max(0, k-tail)
+        t = max(0, k - tail)
 
-        plt.subplot(1,3,1)
-        plt.title('Ground truth', fontsize=fs, pad=tpad)
+        # Ground truth plot
+        ax1 = fig.add_subplot(1, 3, 1, projection='3d')
+        ax1.set_title('Ground truth', fontsize=fs, pad=tpad)
         for i, path in enumerate(orbit):
-            plt.plot(path[1,t:k], path[2,t:k], '--', c=colors[i], linewidth=lw)
-        for i, path in enumerate(orbit):
-            plt.plot(path[1,k], path[2,k], '.', c=colors[i], markersize=ms)
-    #     plt.axis('off')
-    #     plt.xticks([], []) ; plt.yticks([], [])
-        plt.xlim(xmin, xmax) ; plt.ylim(ymin, ymax)
-    #     plt.axis('equal')
+            ax1.plot(path[1,t:k], path[2,t:k], path[3,t:k], '--', c=colors[i], linewidth=lw)
+            ax1.plot([path[1,k]], [path[2,k]], [path[3,k]], '.', c=colors[i], markersize=ms)
+        ax1.set_xlim(xmin, xmax)
+        ax1.set_ylim(ymin, ymax)
+        ax1.set_zlim(zmin, zmax)
 
+        # Baseline NN plot
         colors = [(1,0,0), (1,.6,.6), (1,.8,.8)]
-        plt.subplot(1,3,2)
-        plt.title('Baseline NN', fontsize=fs, pad=tpad)
+        ax2 = fig.add_subplot(1, 3, 2, projection='3d')
+        ax2.set_title('Baseline NN', fontsize=fs, pad=tpad)
         for i, path in enumerate(base_orbit):
-            plt.plot(path[1,t:k], path[2,t:k], '--', c=colors[i], linewidth=lw)
-        for i, path in enumerate(base_orbit):
-            plt.plot(path[1,k], path[2,k], '.', c=colors[i], markersize=ms)
-    #     plt.axis('off')
-    #     plt.xticks([], []) ; plt.yticks([], [])
-        plt.xlim(xmin, xmax) ; plt.ylim(ymin, ymax)
-    #     plt.axis('equal')
+            ax2.plot(path[1,t:k], path[2,t:k], path[3,t:k], '--', c=colors[i], linewidth=lw)
+            ax2.plot([path[1,k]], [path[2,k]], [path[3,k]], '.', c=colors[i], markersize=ms)
+        ax2.set_xlim(xmin, xmax)
+        ax2.set_ylim(ymin, ymax)
+        ax2.set_zlim(zmin, zmax)
 
+        # Hamiltonian NN plot
         colors = [(0,0,1), (.6,.6,1), (.8,.8,1)]
-        plt.subplot(1,3,3)
-        plt.title('Hamiltonian NN', fontsize=fs, pad=tpad)
+        ax3 = fig.add_subplot(1, 3, 3, projection='3d')
+        ax3.set_title('Hamiltonian NN', fontsize=fs, pad=tpad)
         for i, path in enumerate(hnn_orbit):
-            plt.plot(path[1,t:k], path[2,t:k], '--', c=colors[i], linewidth=lw)
-        for i, path in enumerate(hnn_orbit):
-            plt.plot(path[1,k], path[2,k], '.', c=colors[i], markersize=ms)
-    #     plt.axis('off')
-    #     plt.xticks([], []) ; plt.yticks([], [])
-        plt.xlim(xmin, xmax) ; plt.ylim(ymin, ymax)
-    #     plt.axis('equal')
+            ax3.plot(path[1,t:k], path[2,t:k], path[3,t:k], '--', c=colors[i], linewidth=lw)
+            ax3.plot([path[1,k]], [path[2,k]], [path[3,k]], '.', c=colors[i], markersize=ms)
+        ax3.set_xlim(xmin, xmax)
+        ax3.set_ylim(ymin, ymax)
+        ax3.set_zlim(zmin, zmax)
         
         plt.tight_layout()
 
     dpi = 40
     k = 1600
-    fig = plt.figure(figsize=[8,2.8], dpi=DPI)
+    fig = plt.figure(figsize=[12, 4], dpi=dpi)  # Adjusted figure size for 3D
     plot_orbits(fig, k, fs=13, tpad=6, lw=2, ms=30)
-    plt.show() ; fig.savefig('{}/3body-compare.{}'.format(args.fig_dir, FORMAT))
-    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-compare.{}'.format(FORMAT))
+    plt.show()
+    fig.savefig(f'{args.fig_dir}/3body-compare-3d.{FORMAT}')
+    print('Figure saved in:', f'{PARENT_DIR}{args.fig_dir} as 3body-compare-3d.{FORMAT}')
 
 
 def visualize_all_energies():
