@@ -345,7 +345,7 @@ def visualize_all_orbits(base_model, hnn_model, args):
 
     dpi = 40
     k = 1600
-    fig = plt.figure(figsize=[12, 4], dpi=dpi)  # Adjusted figure size for 3D
+    fig = plt.figure(figsize=[12, 4], dpi=DPI)  # Adjusted figure size for 3D
     plot_orbits(fig, k, fs=13, tpad=6, lw=2, ms=30)
     plt.show()
     fig.savefig(f'{args.fig_dir}/3body-compare-3d.{FORMAT}')
