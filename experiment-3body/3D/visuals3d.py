@@ -365,7 +365,7 @@ def visualize_all_energies(base_model, hnn_model, args, plot3d=False):
     fs=13; tpad=6; lw=2; ms=30
 
     k = 1600
-    fig = plt.figure(figsize=[8,2.8], dpi=DPI)
+    fig = plt.figure(figsize=[15,4], dpi=100)
 
     tstart = max(0, k-tail)
 
@@ -411,7 +411,7 @@ def visualize_all_energies(base_model, hnn_model, args, plot3d=False):
     print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-base-example.{}'.format(FORMAT))
 
 
-def visualize_energy_conservation():
+def visualize_energy_conservation(base_model, hnn_model, args):
 
     t_points = 500
     t_span = [0,3]
@@ -485,48 +485,3 @@ def plot_training_curves():
     fig.savefig('{}/3body-train-curves-long.{}'.format(args.fig_dir, FORMAT))
     print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', '3body-train-curves-long.{}'.format(FORMAT))
 
-# while True:
-#     # Display options
-#     print("\nPlease choose an option:")
-#     print("1: plot_ground_truth")
-#     print("2: load_models")
-#     print("3: what_has_baseline_learned")
-#     print("4: what_has_hnn_learned")
-#     print("5: visualize_all_orbits")
-#     print("6: visualize_all_energies")
-#     print("7: visualize_energy_conservation")
-#     print("8: plot_training_curves")
-    
-#     print("-1: Exit")
-    
-#     # Get user input
-#     user_choice = input("Enter the number of your choice: ")
-
-#     # Check if user wants to exit
-#     if user_choice == "-1":
-#         print("Exiting the program.")
-#         break
-
-#     # Call corresponding function based on input
-#     if user_choice == "1":
-#         plot_ground_truth()
-#     elif user_choice == "2":
-#         load_models()
-#     elif user_choice == "3":
-#         what_has_baseline_learned()
-#     elif user_choice == "4":
-#         what_has_hnn_learned()
-#     elif user_choice == "5":
-#         visualize_all_orbits()
-#     elif user_choice == "6":
-#         visualize_all_energies()
-#     elif user_choice == "7":
-#         visualize_energy_conservation()
-#     elif user_choice == "8":
-#         plot_training_curves()
-#     else:
-#         print("Invalid choice, please enter a number from the list.")
-
-# plot_ground_truth()
-# what_has_baseline_learned()
-# what_has_hnn_learned()
