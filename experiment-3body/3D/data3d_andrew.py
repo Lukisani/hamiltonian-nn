@@ -157,7 +157,7 @@ def worker_func(args, orbit_kwargs):
     return simulate_orbit(*args, **orbit_kwargs)
 
 ##### PARALLEL ORBIT SAMPLING WITH PROGRESS BAR #####
-def sample_orbits_parallel(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
+def sample_orbits_parallel(timesteps=20, trials=100, nbodies=3, orbit_noise=2e-1,
                            min_radius=0.9, max_radius=1.2, t_span=[0, 5],
                            nprocs=2*mp.cpu_count(), **kwargs):
     """
