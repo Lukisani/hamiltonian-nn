@@ -36,7 +36,7 @@ def total_energy(state):
 
 
 ##### DYNAMICS #####
-def get_accelerations(state, epsilon=0):
+def get_accelerations(state, epsilon=1e-6):
     # shape of state is [bodies x properties]
     net_accs = [] # [nbodies x 2]
     for i in range(state.shape[0]): # number of bodies
@@ -114,7 +114,7 @@ def random_config(nu=2e-1, min_radius=0.9, max_radius=1.2):
 
 
 ##### INTEGRATE AN ORBIT OR TWO #####
-def sample_orbits(timesteps=20, trials=10, nbodies=3, orbit_noise=2e-1,
+def sample_orbits(timesteps=20, trials=100, nbodies=3, orbit_noise=2e-1,
                   min_radius=0.9, max_radius=1.2, t_span=[0, 5], verbose=False, **kwargs): #trials were at 5000 before and timesteps at 20 - reduced to make dataset generation faster
     
     orbit_settings = locals()
