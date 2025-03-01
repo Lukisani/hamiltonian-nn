@@ -48,7 +48,7 @@ def plot_ground_truth(plot3d=False):
     print('kaka')
     args = ObjectView(get_args())
     np.random.seed(0)
-    state = random_config(nu=0)  # Remove noise for testing
+    state = random_config()  # Remove noise for testing
     orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9, atol=1e-12) # original t_span = [0,5]
 
     # Convert velocities to momenta for energy calculation
