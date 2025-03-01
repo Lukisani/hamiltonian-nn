@@ -28,7 +28,7 @@ def total_energy(state):
 
 
 ##### DYNAMICS #####
-def get_accelerations(state, epsilon=0):
+def get_accelerations(state, epsilon=1e-3):
     net_accs = []  # [nbodies x 3]
     for i in range(state.shape[0]):  # number of bodies
         other_bodies = np.concatenate([state[:i, :], state[i+1:, :]], axis=0)
