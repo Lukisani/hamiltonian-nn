@@ -48,49 +48,36 @@ def plot_ground_truth(plot3d=False):
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
-    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9) # original t_span = [0,5]
+    orbit, settings = get_orbit(state, t_points=1000, t_span=[0, 20], rtol=1e-9)
 
-    # print('orbit shape:', orbit.shape)
-    # # print('settings shape:', settings.shape)
+    # Convert velocities to momenta for energy calculation
+    mass = orbit[:, 0:1]  # (3, 1, timesteps)
+    velocities = orbit[:, 4:7]  # (3, 3, timesteps)
+    momenta = mass * velocities  # p = m*v
+    orbit_with_momenta = np.concatenate([orbit[:, :4], momenta], axis=1)
 
-    # print(orbit)
-    # print('\n\n')
-    # print(settings)
-    
-    # draw trajectories
-    fig = plt.figure(figsize=[10,4], dpi=100)
-    ax = fig.add_subplot(1, 2, 1, projection='3d')  # 3D subplot
+    # Plot trajectories
+    fig = plt.figure(figsize=[10, 4], dpi=100)
+    ax = fig.add_subplot(1, 2, 1, projection='3d')
     ax.set_title('Trajectories')
-    if  plot3d: #plots using 3d coords
-        for i, path in enumerate(orbit):
-            plt.plot(path[1], path[2], path[3], label='body {} path'.format(i))
-    else: # plots using placeholder for z coord (2D but in fake 3D)
-        # plt.subplot(1,2,1)
-        z_placeholder = np.zeros(1000) # z_coord testing
-        cooler_placeholder = np.linspace(-1, 1, 1000)  # Numbers from 1 to 1000
-        for i, path in enumerate(orbit):
-            plt.plot(path[1], path[2], z_placeholder, label='body {} path'.format(i))
-    
-    
+    for i, path in enumerate(orbit):
+        if plot3d:
+            ax.plot(path[1], path[2], path[3], label=f'body {i} path')
+        else:
+            ax.plot(path[1], path[2], np.zeros_like(path[1]), label=f'body {i} path')
     ax.axis('equal')
-    ax.set_xlabel('$x$') ; ax.set_ylabel('$y$') ; ax.set_zlabel('$z$')
+    ax.set_xlabel('$x$'); ax.set_ylabel('$y$'); ax.set_zlabel('$z$')
     ax.legend(fontsize=8)
 
-    plt.axis('equal')
-    plt.xlabel('$x$') ; plt.ylabel('$y$')
-    plt.legend(fontsize=8)
-
-    plt.subplot(1,2,2)
-    plt.title('Energy') ; plt.xlabel('time')
+    # Plot energy using corrected momenta
+    plt.subplot(1, 2, 2)
+    plt.title('Energy'); plt.xlabel('time')
     plt.plot(settings['t_eval'], potential_energy(orbit), label='potential')
-    plt.plot(settings['t_eval'], kinetic_energy(orbit), label='kinetic')
-    plt.plot(settings['t_eval'], total_energy(orbit), label='total')
+    plt.plot(settings['t_eval'], kinetic_energy(orbit_with_momenta), label='kinetic')  # Use corrected data
+    plt.plot(settings['t_eval'], total_energy(orbit_with_momenta), label='total')
     plt.legend()
     plt.xlim(*settings['t_span'])
     plt.show()
-
-    fig.savefig('{}/orbits-dataset.{}'.format(args.fig_dir, FORMAT))
-    print('Figure saved in:', PARENT_DIR + args.fig_dir, 'as', 'orbits-dataset.{}'.format(FORMAT))
 
 
 # def load_model(args, baseline=False):
