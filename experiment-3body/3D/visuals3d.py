@@ -26,7 +26,7 @@ FORMAT = 'pdf'
 
 def get_args():
     return {'input_dim': 3*6, # two bodies, each with q_x, q_y, p_z, p_y
-         'hidden_dim': 200,
+         'hidden_dim': 400,
          'learn_rate': 1e-3,
          'input_noise': 0.,
          'batch_size': 600,

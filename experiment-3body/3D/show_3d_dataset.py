@@ -9,7 +9,6 @@ sys.path.append(PARENT_DIR)
 from utils import from_pickle
 
 path = '{}/{}-3Dorbits-dataset.pkl'.format(THIS_DIR, '3body')
-print('path =', path)
 
 data = from_pickle(path)
 print(data)
