@@ -27,10 +27,8 @@ def potential_energy(state):
     return U
 
 def kinetic_energy(state):
-    '''T=\sum_i 0.5 * p^2 / m'''
-    mass = state[:, 0:1]  # (3, 1)
-    p = state[:, 4:7]     # (3, 3) [px, py, pz]
-    energies = 0.5 * (p**2).sum(axis=1, keepdims=True) / mass
+    '''T=\sum_i .5*m*v^2'''
+    energies = .5 * state[:,0:1] * (state[:,4:7]**2).sum(1, keepdims=True)
     T = energies.sum(0).squeeze()
     return T
 
@@ -64,7 +62,7 @@ def update(t, state):
 ##### INTEGRATION SETTINGS #####
 def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **kwargs):
     if not 'rtol' in kwargs.keys():
-        kwargs['rtol'] = 1e-9 # was -9 before...
+        kwargs['rtol'] = 1e-6 # was -9 before...
 
     orbit_settings = locals()
 
