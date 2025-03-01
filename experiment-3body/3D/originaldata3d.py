@@ -37,7 +37,6 @@ def total_energy(state):
 
 
 ##### DYNAMICS #####
-def get_accelerations(state, epsilon=1e-6):
 def get_accelerations(state, epsilon=0):
     # shape of state is [bodies x properties]
     net_accs = [] # [nbodies x 2]
