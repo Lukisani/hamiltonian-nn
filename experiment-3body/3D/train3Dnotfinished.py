@@ -18,7 +18,7 @@ from utils import L2_loss, to_pickle, from_pickle
 def get_args():
     parser = argparse.ArgumentParser(description=None)
     parser.add_argument('--input_dim', default=3*4, type=int, help='dimensionality of input tensor')
-    parser.add_argument('--hidden_dim', default=200, type=int, help='hidden dimension of mlp')
+    parser.add_argument('--hidden_dim', default=400, type=int, help='hidden dimension of mlp')
     parser.add_argument('--learn_rate', default=1e-3, type=float, help='learning rate')
     parser.add_argument('--batch_size', default=600, type=int, help='batch_size')
     parser.add_argument('--nonlinearity', default='tanh', type=str, help='neural net nonlinearity')
