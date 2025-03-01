@@ -131,7 +131,7 @@ def sample_orbits(timesteps=20, trials=100, nbodies=3, orbit_noise=2e-1,
             orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
             batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
 
-            for state in batch:
+            for state_flat in batch:
                 # Get derivatives first (needs original state with velocities)
                 dstate_flat = update(None, state_flat)
                 
