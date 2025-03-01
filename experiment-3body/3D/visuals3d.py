@@ -45,6 +45,7 @@ class ObjectView(object):
 
 
 def plot_ground_truth(plot3d=False):
+    print('kaka')
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()
