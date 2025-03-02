@@ -40,8 +40,14 @@ class HNN(torch.nn.Module):
     def permutation_tensor(self,n):
         M = None
         if self.assume_canonical_coords:
-            M = torch.eye(n)
-            M = torch.cat([M[n//2:], -M[:n//2]])
+            # Construct block-diagonal symplectic matrix for 3D canonical coordinates
+            block = torch.zeros(6, 6)
+            block[:3, 3:] = torch.eye(3)  # Top-right block (I)
+            block[3:, :3] = -torch.eye(3) # Bottom-left block (-I)
+    
+            # Number of bodies (assuming n = 3 bodies * 6 DoF)
+            num_bodies = n // 6
+            M = torch.block_diag(*[block for _ in range(num_bodies)])
         else:
             '''Constructs the Levi-Civita permutation tensor'''
             M = torch.ones(n,n) # matrix of ones
