@@ -108,17 +108,30 @@ def plot_ground_truth(plot3d=False):
 #     return deriv.reshape(-1)
 
 def model_update(t, state, model):
-    state = state.reshape(-1,7)  # 3D correction: [bodies x 7]
+    state = state.reshape(-1, 7)  # [bodies x 7]
+    n_bodies = state.shape[0]
+    mass = state[:, 0]  # [n_bodies]
     
+    # Extract positions and velocities (shape: [n_bodies, 6])
+    np_x = state[:, 1:]  # [q (3), v (3)] per body
+    x = torch.tensor(np_x.flatten()[None, :], requires_grad=True, dtype=torch.float32)
+    
+    # Compute derivatives using the model
+    dx_hat = model.time_derivative(x)  # [1, n_bodies * 6]
+    dx_hat = dx_hat.detach().numpy().reshape(n_bodies, 6)
+    
+    # Split into dq/dt (velocity) and dp/dt (force)
+    dqdt = dx_hat[:, :3]  # Already correct: dq/dt = v
+    dpdt = dx_hat[:, 3:]  # Needs conversion: dv/dt = dpdt / mass
+    
+    # Convert dp/dt to dv/dt
+    dvdt = dpdt / mass[:, None]  # Divide by mass for each body
+    
+    # Assign derivatives to the state
     deriv = np.zeros_like(state)
-    np_x = state[:,1:]  # [bodies x 6] (x,y,z,vx,vy,vz)
-    np_x = np_x.flatten()[None, :]  # [1, 3*6]
+    deriv[:, 1:4] = dqdt  # Position derivatives (velocities)
+    deriv[:, 4:7] = dvdt  # Velocity derivatives (accelerations)
     
-    x = torch.tensor(np_x, requires_grad=True, dtype=torch.float32)
-    dx_hat = model.time_derivative(x)  # [1, 3*6]
-    
-    # Reshape to [bodies x 6] and assign to deriv
-    deriv[:,1:] = dx_hat.detach().numpy().reshape(3,6)
     return deriv.reshape(-1)
 
 def what_has_baseline_learned(base_model, args, plot3d=False):
