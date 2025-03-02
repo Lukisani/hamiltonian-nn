@@ -28,6 +28,8 @@ class HNN(torch.nn.Module):
         return rk4(fun=self.time_derivative, y0=x, t=0, dt=dt)
 
     def time_derivative(self, x, t=None):
+        if self.baseline:
+            return self.differentiable_model(x)
         H = self.differentiable_model(x)
         dH = torch.autograd.grad(H.sum(), x, create_graph=True)[0]
         return dH @ self.M  # Correct symplectic structure
