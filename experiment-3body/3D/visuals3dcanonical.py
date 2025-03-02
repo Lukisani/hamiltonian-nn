@@ -17,8 +17,8 @@ sys.path.append(PARENT_DIR)
 from nn_models import MLP
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
-from data3d import get_dataset, get_orbit, random_config # convert to data3d after debugging
-from data3d import potential_energy, kinetic_energy, total_energy
+from data3dcanonical import get_dataset, get_orbit, random_config # convert to data3d after debugging
+from data3dcanonical import potential_energy, kinetic_energy, total_energy
 
 DPI = 300
 FORMAT = 'pdf'
@@ -49,7 +49,7 @@ def plot_ground_truth(plot3d=False):
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()  # Remove noise for testing
-    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9, atol=1e-12) # original t_span = [0,20]
+    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9) # original t_span = [0,20]
 
     # Convert velocities to momenta for energy calculation
     mass = orbit[:, 0:1]  # (3, 1, timesteps)
