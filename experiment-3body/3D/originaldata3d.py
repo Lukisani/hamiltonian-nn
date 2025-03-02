@@ -1,4 +1,3 @@
-
 # Hamiltonian Neural Networks | 2019
 # Sam Greydanus, Misko Dzamba, Jason Yosinski
 
@@ -12,6 +11,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 sys.path.append(parent_dir)
 
 from utils import to_pickle, from_pickle
+from tqdm import tqdm
 
 ##### ENERGY #####
 def potential_energy(state):
@@ -37,7 +37,7 @@ def total_energy(state):
 
 
 ##### DYNAMICS #####
-def get_accelerations(state, epsilon=0):
+def get_accelerations(state, epsilon=1e-3):
     # shape of state is [bodies x properties]
     net_accs = [] # [nbodies x 2]
     for i in range(state.shape[0]): # number of bodies
@@ -71,8 +71,9 @@ def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **
     orbit_settings['t_eval'] = t_eval
 
     path = solve_ivp(fun=update_fn, t_span=t_span, y0=state.flatten(),
-                     t_eval=t_eval, **kwargs)
+                     t_eval=t_eval,  **kwargs)
     orbit = path['y'].reshape(nbodies, 7, t_points)
+    print('poopy')
     return orbit, orbit_settings
 
 
@@ -115,7 +116,7 @@ def random_config(nu=2e-1, min_radius=0.9, max_radius=1.2):
 
 
 ##### INTEGRATE AN ORBIT OR TWO #####
-def sample_orbits(timesteps=20, trials=1250, nbodies=3, orbit_noise=2e-1,
+def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
                   min_radius=0.9, max_radius=1.2, t_span=[0, 5], verbose=False, **kwargs): #trials were at 5000 before and timesteps at 20 - reduced to make dataset generation faster
     
     orbit_settings = locals()
@@ -124,26 +125,27 @@ def sample_orbits(timesteps=20, trials=1250, nbodies=3, orbit_noise=2e-1,
     
     x, dx, e = [], [], []
     N = timesteps*trials
-    while len(x) < N:
-        if len(x) % 100 == 0:
-            print('len(x) =', len(x)) # for debugging
+    with tqdm(total=trials, desc="Generating orbits") as pbar:
+        while len(x) < N:
 
-        state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
-        orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
-        batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
+            state = random_config(nu=orbit_noise, min_radius=min_radius, max_radius=max_radius)
+            orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
+            batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
 
-        for state in batch:
-            dstate = update(None, state)
-            
-            # reshape from [nbodies, state] where state=[m, qx, qy, qz, px, py, pz]
-            # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
-            coords = state.reshape(nbodies,7).T[1:].flatten()
-            dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
-            x.append(coords)
-            dx.append(dcoords)
+            for state in batch:
+                # Get derivatives first (needs original state with velocities)
+                dstate = update(None, state)
+                
+                # reshape from [nbodies, state] where state=[m, qx, qy, qz, px, py, pz]
+                # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
+                coords = state.reshape(nbodies,7).T[1:].flatten()
+                dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
+                x.append(coords)
+                dx.append(dcoords)
 
-            shaped_state = state.copy().reshape(nbodies,7,1)
-            e.append(total_energy(shaped_state))
+                shaped_state = state.copy().reshape(nbodies,7,1)
+                e.append(total_energy(shaped_state))
+            pbar.update(1)
     
 
     data = {'coords': np.stack(x)[:N],

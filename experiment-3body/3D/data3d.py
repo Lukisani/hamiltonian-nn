@@ -64,7 +64,7 @@ def update(t, state):
 ##### INTEGRATION SETTINGS #####
 def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **kwargs):
     if not 'rtol' in kwargs.keys():
-        kwargs['rtol'] = 1e-9 # was -9 before...
+        kwargs['rtol'] = 1e-6 # was -9 before...
 
     orbit_settings = locals()
 
@@ -134,18 +134,34 @@ def sample_orbits(timesteps=20, trials=5000, nbodies=3, orbit_noise=2e-1,
             orbit, settings = get_orbit(state, t_points=timesteps, t_span=t_span, nbodies=nbodies, **kwargs)
             batch = orbit.transpose(2,0,1).reshape(-1,nbodies*7)
 
-            for state in batch:
+            for state_flat in batch:
                 # Get derivatives first (needs original state with velocities)
-                dstate = update(None, state)
+                dstate_flat = update(None, state_flat)
+                 # Convert flat state to [nbodies, 7] where 7 = [mass, qx, qy, qz, vx, vy, vz]
+                state_reshaped = state_flat.reshape(nbodies, 7)
                 
-                # reshape from [nbodies, state] where state=[m, qx, qy, qz, px, py, pz]
-                # to [canonical_coords] = [qx1, qx2, qy1, qy2, px1,px2,....]
-                coords = state.reshape(nbodies,7).T[1:].flatten()
-                dcoords = dstate.reshape(nbodies,7).T[1:].flatten()
-                x.append(coords)
-                dx.append(dcoords)
-
-                shaped_state = state.copy().reshape(nbodies,7,1)
+                # --- Critical fix: Compute canonical coordinates (q, p) instead of (q, v) ---
+                mass = state_reshaped[:, 0]          # Shape (3,)
+                positions = state_reshaped[:, 1:4]    # Shape (3, 3)
+                velocities = state_reshaped[:, 4:7]   # Shape (3, 3)
+                momenta = mass[:, None] * velocities  # p = m*v, shape (3, 3)
+                
+                # Concatenate [positions, momenta] and flatten
+                canonical_coords = np.hstack([positions, momenta]).flatten()  # Shape (18,)
+                
+                # Process derivatives similarly
+                dstate_reshaped = dstate_flat.reshape(nbodies, 7)
+                d_positions = dstate_reshaped[:, 1:4]   # dq/dt = v (already correct)
+                d_velocities = dstate_reshaped[:, 4:7]  # dv/dt = acceleration
+                d_momenta = mass[:, None] * d_velocities  # dp/dt = m*dv/dt
+                d_canonical_coords = np.hstack([d_positions, d_momenta]).flatten()
+                
+                # Append to dataset
+                x.append(canonical_coords)
+                dx.append(d_canonical_coords)
+                
+                # Energy computation remains unchanged
+                shaped_state = state_flat.copy().reshape(nbodies, 7, 1)
                 e.append(total_energy(shaped_state))
             pbar.update(1)
     
