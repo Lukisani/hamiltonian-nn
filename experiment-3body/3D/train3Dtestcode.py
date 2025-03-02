@@ -21,7 +21,7 @@ def get_args():
     parser.add_argument('--learn_rate', default=1e-3, type=float, help='learning rate')
     parser.add_argument('--batch_size', default=600, type=int, help='batch_size')
     parser.add_argument('--nonlinearity', default='tanh', type=str, help='neural net nonlinearity')
-    parser.add_argument('--total_steps', default=20000, type=int, help='number of gradient steps') # increased from 10000
+    parser.add_argument('--total_steps', default=10000, type=int, help='number of gradient steps') # increased from 10000
     parser.add_argument('--print_every', default=200, type=int, help='number of gradient steps between prints')
     parser.add_argument('--name', default='3body', type=str, help='only one option right now')
     parser.add_argument('--baseline', dest='baseline', action='store_true', help='run baseline or experiment?')
