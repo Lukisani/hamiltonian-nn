@@ -41,15 +41,11 @@ def train(args):
   if args.verbose:
     print("Training baseline model:" if args.baseline else "Training HNN model:")
 
-  # Model initialization
-  if args.baseline:
-      output_dim = args.input_dim  # Baseline predicts time derivatives directly
-      nn_model = MLP(args.input_dim, args.hidden_dim, output_dim, args.nonlinearity)
-      model = nn_model  # Use the baseline model directly
-  else:
-      output_dim = 1  # HNN predicts the Hamiltonian H
-      nn_model = MLP(args.input_dim, args.hidden_dim, output_dim, args.nonlinearity)
-      model = HNN(args.input_dim, differentiable_model=nn_model)  # Use the HNN
+  output_dim = args.input_dim if args.baseline else 1
+  nn_model = MLP(args.input_dim, args.hidden_dim, output_dim, args.nonlinearity)
+  model = HNN(args.input_dim, differentiable_model=nn_model,
+            field_type=args.field_type, baseline=args.baseline)
+  optim = torch.optim.Adam(model.parameters(), args.learn_rate, weight_decay=1e-4)
 
   # arrange data
   data = get_dataset(args.name, args.save_dir, verbose=True)
