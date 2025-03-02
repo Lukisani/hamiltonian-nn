@@ -49,7 +49,7 @@ def plot_ground_truth(plot3d=False):
     args = ObjectView(get_args())
     np.random.seed(0)
     state = random_config()  # Remove noise for testing
-    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9, atol=1e-12) # original t_span = [0,20]
+    orbit, settings = get_orbit(state, t_points=1000, t_span = [0, 20], rtol = 1e-9) # original t_span = [0,20]
 
     # print('orbit shape:', orbit.shape)
     # # print('settings shape:', settings.shape)
