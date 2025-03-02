@@ -75,7 +75,7 @@ def get_orbit(state, update_fn=update, t_points=100, t_span=[0,2], nbodies=3, **
     path = solve_ivp(fun=update_fn, t_span=t_span, y0=state.flatten(),
                      t_eval=t_eval,  **kwargs)
     orbit = path['y'].reshape(nbodies, 7, t_points)
-    print('data3dcanonical getorbit')
+    # print('data3dcanonical getorbit')
     return orbit, orbit_settings
 
 
