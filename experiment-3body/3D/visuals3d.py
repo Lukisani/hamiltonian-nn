@@ -17,8 +17,8 @@ sys.path.append(PARENT_DIR)
 from nn_models import MLP
 from hnn import HNN
 from utils import L2_loss, to_pickle, from_pickle
-from data3dcanonical import get_dataset, get_orbit, random_config # convert to data3d after debugging
-from data3dcanonical import potential_energy, kinetic_energy, total_energy
+from data3d import get_dataset, get_orbit, random_config # convert to data3d after debugging
+from data3d import potential_energy, kinetic_energy, total_energy
 
 DPI = 300
 FORMAT = 'pdf'
