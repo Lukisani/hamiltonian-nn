@@ -11,6 +11,7 @@ class HNN(torch.nn.Module):
     '''Learn arbitrary vector fields that are sums of conservative and solenoidal fields'''
     def __init__(self, input_dim, differentiable_model, assume_canonical_coords=True, baseline=False):
         super(HNN, self).__init__()
+        self.baseline = baseline
         self.differentiable_model = differentiable_model
         self.assume_canonical_coords = assume_canonical_coords
         self.M = self.permutation_tensor(input_dim) # Levi-Civita permutation tensor
